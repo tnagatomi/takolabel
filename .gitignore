@@ -12,5 +12,5 @@
 *.out
 
 # takolabel specific files
-app.env
+takolabel.env
 labels.yaml

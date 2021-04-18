@@ -2,7 +2,7 @@
 
 GitHub IssueのLabelを複数指定したリポジトリに一括で作成します。
 
-`app.env` に以下の変数を設定します
+`takolabel.env` に以下の変数を設定します
 
 * BASE_URL (例: `https://ghe.example.com/`)
 * GITHUB_TOKEN

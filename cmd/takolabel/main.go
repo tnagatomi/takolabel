@@ -13,7 +13,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	viper.SetConfigName("app")
+	viper.SetConfigName("takolabel")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
