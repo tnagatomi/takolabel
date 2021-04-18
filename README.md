@@ -20,13 +20,13 @@ repositories:
   - org: another-org
     repo: another-org-repo-1
 labels:
-  - name: Label One
+  - name: Label 1
     description: This is the label one 
     color: ff0000
-  - name: Label Two
+  - name: Label 2
     description: This is the label two
     color: 00ff00
-  - name: Label Three
+  - name: Label 3
     description: This is the label three
     color: 0000ff
 ```
