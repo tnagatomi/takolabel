@@ -21,14 +21,6 @@ func main() {
 		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
-	viper.SetConfigName("labels")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	err = viper.MergeInConfig()
-	if err != nil {
-		panic(fmt.Errorf("error reading config: %s", err))
-	}
-
 	githubToken := viper.GetString("GITHUB_TOKEN")
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
@@ -43,6 +35,14 @@ func main() {
 		}
 	} else {
 		client = github.NewClient(tc)
+	}
+
+	viper.SetConfigName("labels")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	err = viper.MergeInConfig()
+	if err != nil {
+		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
 	var labels []util.Label
