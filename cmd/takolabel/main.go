@@ -6,6 +6,7 @@ import (
 	"github.com/google/go-github/v33/github"
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
+	"takolabel"
 	"takolabel/util"
 )
 
@@ -57,19 +58,5 @@ func main() {
 		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
-	for _, repository := range repositories {
-		for _, label := range labels {
-			githubLabel := &github.Label{
-				Name:        github.String(label.Name),
-				Description: github.String(label.Description),
-				Color:       github.String(label.Color),
-			}
-			_, _, err = client.Issues.CreateLabel(ctx, repository.Org, repository.Repo, githubLabel)
-			if err != nil {
-				fmt.Printf("error creating label \"%s\" for repository \"%s\": %s\n", label.Name, repository.Org+"/"+repository.Repo, err)
-			} else {
-				fmt.Printf("created label \"%s\" for repository \"%s\"\n", label.Name, repository.Org+"/"+repository.Repo)
-			}
-		}
-	}
+	takolabel.CreateLabels(&takolabel.IssuesClient{Ctx: ctx, IssuesService: client.Issues}, repositories, labels)
 }
