@@ -5,6 +5,7 @@ GitHub IssueのLabelを複数指定したリポジトリに一括で作成しま
 `takolabel.env` に以下の変数を設定します
 
 * BASE_URL (例: `https://ghe.example.com/`)
+  * 設定しなかった場合は `github.com` に対して操作を行います。
 * GITHUB_TOKEN
 
 `labels.yaml` にラベルの設定を書いて実行します。
