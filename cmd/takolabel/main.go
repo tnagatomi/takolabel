@@ -10,6 +10,8 @@ import (
 )
 
 func main() {
+	ctx := context.Background()
+
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
@@ -31,12 +33,16 @@ func main() {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
 	)
-	ctx := context.Background()
 	tc := oauth2.NewClient(ctx, ts)
 	baseUrl := viper.GetString("BASE_URL")
-	client, err := github.NewEnterpriseClient(baseUrl, baseUrl, tc)
-	if err != nil {
-		panic(fmt.Errorf("error setting ghe client: %s", err))
+	var client *github.Client
+	if baseUrl != "" {
+		client, err = github.NewEnterpriseClient(baseUrl, baseUrl, tc)
+		if err != nil {
+			panic(fmt.Errorf("error setting ghe client: %s", err))
+		}
+	} else {
+		client = github.NewClient(tc)
 	}
 
 	var labels []util.Label
