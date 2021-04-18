@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/v33/github"
-	"takolabel/util"
+	"takolabel/config"
 )
 
-func CreateLabels(issuesClient *IssuesClient, repositories []util.Repository, labels []util.Label) int {
+func CreateLabels(issuesClient *IssuesClient, repositories []config.Repository, labels []config.Label) int {
 	createdLabelsCount := 0
 	for _, repository := range repositories {
 		for _, label := range labels {
@@ -28,7 +28,7 @@ type IssuesClient struct {
 	IssuesService IssuesService
 }
 
-func (ic *IssuesClient) CreateLabel(label util.Label, repository util.Repository) (*github.Label, error) {
+func (ic *IssuesClient) CreateLabel(label config.Label, repository config.Repository) (*github.Label, error) {
 	githubLabel := &github.Label{
 		Name:        github.String(label.Name),
 		Description: github.String(label.Description),

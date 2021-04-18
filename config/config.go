@@ -1,4 +1,4 @@
-package util
+package config
 
 type Repository struct {
 	Org  string `mapstructure:"org"`

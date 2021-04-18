@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/google/go-github/v33/github"
 	"reflect"
-	"takolabel/util"
+	"takolabel/config"
 	"testing"
 )
 
@@ -17,7 +17,7 @@ func (ms *mockService) CreateLabel(_ context.Context, _ string, _ string, label 
 
 func TestCreateLabels(t *testing.T) {
 	ctx := context.Background()
-	repositories := []util.Repository{
+	repositories := []config.Repository{
 		{
 			Org:  "some-org",
 			Repo: "some-org-repo-1",
@@ -31,7 +31,7 @@ func TestCreateLabels(t *testing.T) {
 			Repo: "another-org-repo-1",
 		},
 	}
-	labels := []util.Label{
+	labels := []config.Label{
 		{
 			Name:        "Label 1",
 			Description: "This is the label one",
@@ -61,8 +61,8 @@ func TestCreateLabel(t *testing.T) {
 	ms := &mockService{}
 	ic := &IssuesClient{Ctx: ctx, IssuesService: ms}
 	createdLabel, err := ic.CreateLabel(
-		util.Label{Name: "Label 1", Description: "This is the label one", Color: "ff0000"},
-		util.Repository{Org: "org", Repo: "repository"},
+		config.Label{Name: "Label 1", Description: "This is the label one", Color: "ff0000"},
+		config.Repository{Org: "org", Repo: "repository"},
 	)
 
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"golang.org/x/oauth2"
 	"takolabel"
-	"takolabel/util"
+	"takolabel/config"
 )
 
 func main() {
@@ -46,13 +46,13 @@ func main() {
 		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
-	var labels []util.Label
+	var labels []config.Label
 	err = viper.UnmarshalKey("labels", &labels)
 	if err != nil {
 		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
-	var repositories []util.Repository
+	var repositories []config.Repository
 	err = viper.UnmarshalKey("repositories", &repositories)
 	if err != nil {
 		panic(fmt.Errorf("error reading config: %s", err))
