@@ -16,7 +16,6 @@ func main() {
 	viper.SetConfigName("takolabel")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("error reading config: %s", err))
