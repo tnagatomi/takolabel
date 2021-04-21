@@ -3,7 +3,8 @@ before:
     - go mod tidy
     - go generate ./...
 builds:
-  - env:
+  - main: ./cmd/takolabel/
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
