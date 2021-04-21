@@ -58,5 +58,14 @@ func main() {
 		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
-	takolabel.CreateLabels(&takolabel.IssuesClient{Ctx: ctx, IssuesService: client.Issues}, repositories, labels)
+	for _, repository := range repositories {
+		for _, label := range labels {
+			_, err := takolabel.CreateLabel(ctx, client.Issues, label, repository)
+			if err != nil {
+				fmt.Printf("error creating label \"%s\" for repository \"%s\": %s\n", label.Name, repository.Org+"/"+repository.Repo, err)
+			} else {
+				fmt.Printf("created label \"%s\" for repository \"%s\"\n", label.Name, repository.Org+"/"+repository.Repo)
+			}
+		}
+	}
 }
