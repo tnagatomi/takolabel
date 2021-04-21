@@ -37,7 +37,7 @@ func main() {
 		client = github.NewClient(tc)
 	}
 
-	viper.SetConfigName("labels")
+	viper.SetConfigName("takolabel_create")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 	err = viper.MergeInConfig()

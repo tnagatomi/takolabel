@@ -8,7 +8,7 @@ GitHub IssueのLabelを複数指定したリポジトリに一括で作成しま
   * 設定しなかった場合は `github.com` に対して操作を行います。
 * GITHUB_TOKEN
 
-`labels.yaml` にラベルの設定を書いて実行します。
+`takolabel_create.yaml` にラベルの設定を書いて実行します。
 
 Example:
 
