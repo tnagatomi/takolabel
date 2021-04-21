@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/google/go-github/v33/github"
 	"github.com/spf13/viper"
+	"github.com/tommy6073/takolabel"
+	"github.com/tommy6073/takolabel/config"
 	"golang.org/x/oauth2"
-	"takolabel"
-	"takolabel/config"
 )
 
 func main() {

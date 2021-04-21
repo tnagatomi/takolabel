@@ -3,8 +3,8 @@ package takolabel
 import (
 	"context"
 	"github.com/google/go-github/v33/github"
+	"github.com/tommy6073/takolabel/config"
 	"reflect"
-	"takolabel/config"
 	"testing"
 )
 

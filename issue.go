@@ -3,7 +3,7 @@ package takolabel
 import (
 	"context"
 	"github.com/google/go-github/v33/github"
-	"takolabel/config"
+	"github.com/tommy6073/takolabel/config"
 )
 
 func CreateLabel(ctx context.Context, issuesService IssuesService, label config.Label, repository config.Repository) (*github.Label, error) {
