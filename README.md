@@ -14,15 +14,16 @@ Download from [Releases page](https://github.com/tommy6073/takolabel/releases) i
 
 ## Usage
 
-`takolabel.env` に以下の変数を設定します
+Set variables below in `takolabel.env` and put in the same directory as the one where you run the command.
 
-* BASE_URL (例: `https://ghe.example.com/`)
-  * 設定しなかった場合は `github.com` に対して操作を行います。
-* GITHUB_TOKEN
+- BASE_URL (e.g. `https://ghe.example.com/`)
+  - Manipulations will take place in `github.com` repositories if you didn't set this variable.
+- GITHUB_TOKEN
+  - A token with `repo` scope will suffice.
 
-`takolabel_create.yaml` にラベルの設定を書いて実行します。
+Write labels settings in `takolabel_create.yaml` and put in the same directory as the one where you run the command.
 
-Example:
+e.g.
 
 ```yaml
 repositories:
@@ -42,4 +43,10 @@ labels:
   - name: Label 3
     description: This is the label three
     color: 0000ff
+```
+
+Run command.
+
+```console
+$ takolabel
 ```
