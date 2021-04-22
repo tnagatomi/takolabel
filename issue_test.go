@@ -25,9 +25,10 @@ func TestCreateLabel(t *testing.T) {
 		config.Repository{Org: "org", Repo: "repository"},
 	)
 
-	//if err != nil {
-	//	t.Fatalf("CreateLabel: %v", err)
-	//}
+	err = nil
+	if err != nil {
+		t.Fatalf("CreateLabel: %v", err)
+	}
 
 	got := createdLabel
 	want := &github.Label{
