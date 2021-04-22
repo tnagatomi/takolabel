@@ -1,6 +1,18 @@
 # takolabel
 
-GitHub IssueのLabelを複数指定したリポジトリに一括で作成します。
+## Installation
+
+### Mac
+
+```console
+$ brew install tommy6073/tap/takolabel
+```
+
+### Other platforms
+
+Download from [Releases page](https://github.com/tommy6073/takolabel/releases) in this repository.
+
+## Usage
 
 `takolabel.env` に以下の変数を設定します
 
