@@ -6,13 +6,13 @@ import (
 	"github.com/tommy6073/takolabel/config"
 )
 
-func CreateLabel(ctx context.Context, issuesService IssuesService, label config.Label, repository config.Repository) (*github.Label, error) {
+func CreateLabel(ctx context.Context, issuesService IssuesService, label config.Label, owner string, repo string) (*github.Label, error) {
 	githubLabel := &github.Label{
 		Name:        github.String(label.Name),
 		Description: github.String(label.Description),
 		Color:       github.String(label.Color),
 	}
-	createdLabel, _, err := issuesService.CreateLabel(ctx, repository.Org, repository.Repo, githubLabel)
+	createdLabel, _, err := issuesService.CreateLabel(ctx, owner, repo, githubLabel)
 	return createdLabel, err
 }
 

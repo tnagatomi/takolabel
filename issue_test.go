@@ -22,7 +22,8 @@ func TestCreateLabel(t *testing.T) {
 		ctx,
 		ms,
 		config.Label{Name: "Label 1", Description: "This is the label one", Color: "ff0000"},
-		config.Repository{Org: "org", Repo: "repository"},
+		"owner",
+		"repo",
 	)
 
 	if err != nil {

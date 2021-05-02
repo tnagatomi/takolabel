@@ -8,6 +8,7 @@ import (
 	"github.com/tommy6073/takolabel"
 	"github.com/tommy6073/takolabel/config"
 	"golang.org/x/oauth2"
+	"strings"
 )
 
 func main() {
@@ -51,19 +52,20 @@ func main() {
 		panic(fmt.Errorf("error reading config: %s", err))
 	}
 
-	var repositories []config.Repository
-	err = viper.UnmarshalKey("repositories", &repositories)
-	if err != nil {
-		panic(fmt.Errorf("error reading config: %s", err))
-	}
+	repositories := viper.GetStringSlice("repositories")
 
 	for _, repository := range repositories {
+		s := strings.Split(repository, "/")
+		if len(s) != 2 {
+			panic(fmt.Errorf("repository %s is not properly formatted in setting yaml file", repository))
+		}
+		owner, repo := s[0], s[1]
 		for _, label := range labels {
-			_, err := takolabel.CreateLabel(ctx, client.Issues, label, repository)
+			_, err := takolabel.CreateLabel(ctx, client.Issues, label, owner, repo)
 			if err != nil {
-				fmt.Printf("error creating label \"%s\" for repository \"%s\": %s\n", label.Name, repository.Org+"/"+repository.Repo, err)
+				fmt.Printf("error creating label \"%s\" for repository \"%s\": %s\n", label.Name, owner+"/"+repo, err)
 			} else {
-				fmt.Printf("created label \"%s\" for repository \"%s\"\n", label.Name, repository.Org+"/"+repository.Repo)
+				fmt.Printf("created label \"%s\" for repository \"%s\"\n", label.Name, owner+"/"+repo)
 			}
 		}
 	}

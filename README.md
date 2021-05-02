@@ -27,12 +27,9 @@ e.g.
 
 ```yaml
 repositories:
-  - org: some-org
-    repo: some-org-repo-1
-  - org: some-org
-    repo: some-org-repo-2
-  - org: another-org
-    repo: another-org-repo-1
+  - some-org/some-org-repo-1
+  - some-org/some-org-repo-2
+  - another-org/another-org-repo-1
 labels:
   - name: Label 1
     description: This is the label one 
