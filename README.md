@@ -16,7 +16,7 @@ Download from [Releases page](https://github.com/tommy6073/takolabel/releases) i
 
 Set variables below in `takolabel.env` and put in the same directory as the one where you run the command.
 
-- BASE_URL (e.g. `https://ghe.example.com/`)
+- GITHUB_SERVER_URL (e.g. `https://ghe.example.com/`)
   - Manipulations will take place in `github.com` repositories if you didn't set this variable.
 - GITHUB_TOKEN
   - A token with `repo` scope will suffice.

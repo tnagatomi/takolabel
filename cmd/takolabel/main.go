@@ -26,7 +26,7 @@ func main() {
 		&oauth2.Token{AccessToken: githubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	baseUrl := viper.GetString("BASE_URL")
+	baseUrl := viper.GetString("GITHUB_SERVER_URL")
 	var client *github.Client
 	if baseUrl != "" {
 		client, err = github.NewEnterpriseClient(baseUrl, baseUrl, tc)
