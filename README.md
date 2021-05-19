@@ -17,7 +17,7 @@ Download from [Releases page](https://github.com/tommy6073/takolabel/releases) i
 Set variables below in `takolabel.env` and put in the same directory as the one where you run the command.
 
 - GITHUB_TOKEN
-  - A token with `repo` scope will suffice.
+  - A token with `repo` scope is needed if it will be run on a private repository. `public_repo` scope will suffice if it's a public repository.
 - GITHUB_SERVER_URL (e.g. `https://ghe.example.com/`) (optional)
   - Set this variable if you want to work with repositories hosted on GitHub Enterprise server. Manipulations will take place in `github.com` repositories if you didn't set this variable.
 
