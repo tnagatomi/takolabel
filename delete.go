@@ -24,6 +24,20 @@ func GatherDelete() DeleteTarget {
 	return DeleteTarget{repositories, labels}
 }
 
+func DryRunDelete(target DeleteTarget) {
+	for _, repository := range target.repositories {
+		s := strings.Split(repository, "/")
+		if len(s) != 2 {
+			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
+			os.Exit(1)
+		}
+		owner, repo := s[0], s[1]
+		for _, label := range target.labels {
+			fmt.Printf("would delete label \"%s\" for repository \"%s\"\n", label, owner+"/"+repo)
+		}
+	}
+}
+
 func ExecuteDelete(ctx context.Context, client *github.Client, target DeleteTarget) {
 	for _, repository := range target.repositories {
 		s := strings.Split(repository, "/")

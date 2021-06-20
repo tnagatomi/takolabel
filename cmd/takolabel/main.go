@@ -22,6 +22,8 @@ func main() {
 	}
 	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
 	createDryRun := createCmd.Bool("dry-run", false, "execute dry-run")
+	deleteCmd := flag.NewFlagSet("delete", flag.ExitOnError)
+	deleteDryRun := deleteCmd.Bool("dry-run", false, "execute dry-run")
 
 	switch os.Args[1] {
 	case "create":
@@ -33,11 +35,16 @@ func main() {
 			takolabel.ExecuteCreate(ctx, client, target)
 		}
 	case "delete":
-		if confirm() {
-			target := takolabel.GatherDelete()
-			takolabel.ExecuteDelete(ctx, client, target)
+		deleteCmd.Parse(os.Args[2:])
+		target := takolabel.GatherDelete()
+		if *deleteDryRun {
+			takolabel.DryRunDelete(target)
 		} else {
-			os.Exit(0)
+			if confirm() {
+				takolabel.ExecuteDelete(ctx, client, target)
+			} else {
+				os.Exit(0)
+			}
 		}
 	}
 }
