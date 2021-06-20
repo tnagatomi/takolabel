@@ -13,6 +13,13 @@ import (
 func main() {
 	ctx := context.Background()
 
+	client := getGitHubClient(ctx)
+
+	target := takolabel.GatherCreate()
+	takolabel.ExecuteCreate(ctx, client, target)
+}
+
+func getGitHubClient(ctx context.Context) *github.Client {
 	viper.SetConfigName("takolabel")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(".")
@@ -38,7 +45,5 @@ func main() {
 	} else {
 		client = github.NewClient(tc)
 	}
-
-	target := takolabel.GatherCreate()
-	takolabel.ExecuteCreate(ctx, client, target)
+	return client
 }
