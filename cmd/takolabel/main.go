@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tommy6073/takolabel"
 	"golang.org/x/oauth2"
+	"os"
 )
 
 func main() {
@@ -17,7 +18,8 @@ func main() {
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("error reading config: %s", err))
+		fmt.Fprintf(os.Stderr, "error reading config: %s\n", err)
+		os.Exit(1)
 	}
 
 	githubToken := viper.GetString("GITHUB_TOKEN")
@@ -30,7 +32,8 @@ func main() {
 	if baseUrl != "" {
 		client, err = github.NewEnterpriseClient(baseUrl, baseUrl, tc)
 		if err != nil {
-			panic(fmt.Errorf("error setting ghe client: %s", err))
+			fmt.Fprintf(os.Stderr, "error setting ghe client: %s\n", err)
+			os.Exit(1)
 		}
 	} else {
 		client = github.NewClient(tc)
