@@ -31,6 +31,20 @@ func GatherCreate() CreateTarget {
 	return CreateTarget{repositories, labels}
 }
 
+func DryRunCreate(target CreateTarget) {
+	for _, repository := range target.repositories {
+		s := strings.Split(repository, "/")
+		if len(s) != 2 {
+			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
+			os.Exit(1)
+		}
+		owner, repo := s[0], s[1]
+		for _, label := range target.labels {
+			fmt.Printf("Would create label \"%s\" for repository \"%s\"\n", label.Name, owner+"/"+repo)
+		}
+	}
+}
+
 func ExecuteCreate(ctx context.Context, client *github.Client, target CreateTarget) {
 	for _, repository := range target.repositories {
 		s := strings.Split(repository, "/")

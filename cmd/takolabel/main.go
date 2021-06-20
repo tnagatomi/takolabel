@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"github.com/google/go-github/v33/github"
 	"github.com/spf13/viper"
@@ -19,11 +20,18 @@ func main() {
 		fmt.Fprintf(os.Stderr, "expected subcommands\n")
 		os.Exit(1)
 	}
+	createCmd := flag.NewFlagSet("create", flag.ExitOnError)
+	createDryRun := createCmd.Bool("dry-run", false, "execute dry-run")
 
 	switch os.Args[1] {
 	case "create":
+		createCmd.Parse(os.Args[2:])
 		target := takolabel.GatherCreate()
-		takolabel.ExecuteCreate(ctx, client, target)
+		if *createDryRun {
+			takolabel.DryRunCreate(target)
+		} else {
+			takolabel.ExecuteCreate(ctx, client, target)
+		}
 	case "delete":
 		if confirm() {
 			target := takolabel.GatherDelete()
