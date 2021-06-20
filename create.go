@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func GatherCreate() Target {
+func GatherCreate() CreateTarget {
 	viper.SetConfigName("takolabel_create")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
@@ -28,10 +28,10 @@ func GatherCreate() Target {
 	}
 
 	repositories := viper.GetStringSlice("repositories")
-	return Target{repositories, labels}
+	return CreateTarget{repositories, labels}
 }
 
-func ExecuteCreate(ctx context.Context, client *github.Client, target Target) {
+func ExecuteCreate(ctx context.Context, client *github.Client, target CreateTarget) {
 	for _, repository := range target.repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {

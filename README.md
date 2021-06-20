@@ -21,6 +21,8 @@ Set variables below in `takolabel.env` and put in the same directory as the one 
 - GITHUB_SERVER_URL (e.g. `https://ghe.example.com/`) (optional)
   - Set this variable if you want to work with repositories hosted on GitHub Enterprise server. Manipulations will take place in `github.com` repositories if you didn't set this variable.
 
+### Create Labels
+
 Write labels settings in `takolabel_create.yaml` and put in the same directory as the one where you run the command.
 
 e.g.
@@ -45,5 +47,28 @@ labels:
 Run command.
 
 ```console
-$ takolabel
+$ takolabel create
+```
+
+### Delete Labels
+
+Write labels settings in `takolabel_delete.yaml` and put in the same directory as the one where you run the command.
+
+e.g.
+
+```yaml
+repositories:
+  - some-owner/some-owner-repo-1
+  - some-owner/some-owner-repo-2
+  - another-owner/another-owner-repo-1
+labels:
+  - Label 1
+  - Label 2
+  - Label 3
+```
+
+Run command (you will be confirmed).
+
+```console
+$ takolabel delete
 ```
