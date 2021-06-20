@@ -24,6 +24,13 @@ func main() {
 	case "create":
 		target := takolabel.GatherCreate()
 		takolabel.ExecuteCreate(ctx, client, target)
+	case "delete":
+		if confirm() {
+			target := takolabel.GatherDelete()
+			takolabel.ExecuteDelete(ctx, client, target)
+		} else {
+			os.Exit(0)
+		}
 	}
 }
 
@@ -54,4 +61,17 @@ func getGitHubClient(ctx context.Context) *github.Client {
 		client = github.NewClient(tc)
 	}
 	return client
+}
+
+func confirm() bool {
+	var response string
+	fmt.Printf("are you sure you want to do this? (y/n): ")
+	_, err := fmt.Scan(&response)
+	if err != nil {
+		os.Exit(1)
+	}
+	if response == "y" {
+		return true
+	}
+	return false
 }

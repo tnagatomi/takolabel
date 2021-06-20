@@ -15,3 +15,8 @@ func CreateLabel(ctx context.Context, issuesService *github.IssuesService, label
 	createdLabel, _, err := issuesService.CreateLabel(ctx, owner, repo, githubLabel)
 	return createdLabel, err
 }
+
+func DeleteLabel(ctx context.Context, issuesService *github.IssuesService, label string, owner string, repo string) error {
+	_, err := issuesService.DeleteLabel(ctx, owner, repo, label)
+	return err
+}
