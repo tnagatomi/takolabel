@@ -15,8 +15,16 @@ func main() {
 
 	client := getGitHubClient(ctx)
 
-	target := takolabel.GatherCreate()
-	takolabel.ExecuteCreate(ctx, client, target)
+	if len(os.Args) < 2 {
+		fmt.Fprintf(os.Stderr, "expected subcommands\n")
+		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+	case "create":
+		target := takolabel.GatherCreate()
+		takolabel.ExecuteCreate(ctx, client, target)
+	}
 }
 
 func getGitHubClient(ctx context.Context) *github.Client {
