@@ -27,7 +27,10 @@ func main() {
 
 	switch os.Args[1] {
 	case "create":
-		createCmd.Parse(os.Args[2:])
+		if err := createCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %s\n", err)
+			os.Exit(1)
+		}
 		target := takolabel.GatherCreate()
 		if *createDryRun {
 			takolabel.DryRunCreate(target)
@@ -35,7 +38,10 @@ func main() {
 			takolabel.ExecuteCreate(ctx, client, target)
 		}
 	case "delete":
-		deleteCmd.Parse(os.Args[2:])
+		if err := deleteCmd.Parse(os.Args[2:]); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %s\n", err)
+			os.Exit(1)
+		}
 		target := takolabel.GatherDelete()
 		if *deleteDryRun {
 			takolabel.DryRunDelete(target)
