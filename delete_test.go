@@ -21,10 +21,10 @@ labels:
 	}
 
 	want := DeleteTarget{
-		Repositories: []string{
-			"some-owner/some-owner-repo-1",
-			"some-owner/some-owner-repo-2",
-			"another-owner/another-owner-repo-1",
+		Repositories: []Repository{
+			{"some-owner", "some-owner-repo-1"},
+			{"some-owner", "some-owner-repo-2"},
+			{"another-owner", "another-owner-repo-1"},
 		},
 		Labels: []string{
 			"Label 1",
