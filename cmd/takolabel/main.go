@@ -54,10 +54,10 @@ func main() {
 			os.Exit(1)
 		}
 		if *deleteDryRun {
-			takolabel.DryRunDelete(delete_.Target)
+			delete_.DryRun()
 		} else {
 			if confirm() {
-				takolabel.ExecuteDelete(ctx, client, delete_.Target)
+				delete_.Execute(ctx, client)
 			} else {
 				os.Exit(0)
 			}

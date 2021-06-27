@@ -40,29 +40,29 @@ func (d *Delete) Gather() error {
 	return nil
 }
 
-func DryRunDelete(target DeleteTarget) {
-	for _, repository := range target.Repositories {
+func (d *Delete) DryRun() {
+	for _, repository := range d.Target.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
 			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
 			os.Exit(1)
 		}
 		owner, repo := s[0], s[1]
-		for _, label := range target.Labels {
+		for _, label := range d.Target.Labels {
 			fmt.Printf("would delete label \"%s\" for repository \"%s\"\n", label, owner+"/"+repo)
 		}
 	}
 }
 
-func ExecuteDelete(ctx context.Context, client *github.Client, target DeleteTarget) {
-	for _, repository := range target.Repositories {
+func (d *Delete) Execute(ctx context.Context, client *github.Client) {
+	for _, repository := range d.Target.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
 			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
 			os.Exit(1)
 		}
 		owner, repo := s[0], s[1]
-		for _, label := range target.Labels {
+		for _, label := range d.Target.Labels {
 			err := DeleteLabel(ctx, client.Issues, label, owner, repo)
 			if err != nil {
 				fmt.Printf("error deleting label \"%s\" for repository \"%s\": %s\n", label, owner+"/"+repo, err)
