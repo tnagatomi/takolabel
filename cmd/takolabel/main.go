@@ -38,9 +38,9 @@ func main() {
 			os.Exit(1)
 		}
 		if *createDryRun {
-			takolabel.DryRunCreate(create.Target)
+			create.DryRun()
 		} else {
-			takolabel.ExecuteCreate(ctx, client, create.Target)
+			create.Execute(ctx, client)
 		}
 	case "delete":
 		if err := deleteCmd.Parse(os.Args[2:]); err != nil {

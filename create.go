@@ -40,29 +40,29 @@ func (c *Create) Gather() error {
 	return nil
 }
 
-func DryRunCreate(target CreateTarget) {
-	for _, repository := range target.Repositories {
+func (c *Create) DryRun() {
+	for _, repository := range c.Target.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
 			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
 			os.Exit(1)
 		}
 		owner, repo := s[0], s[1]
-		for _, label := range target.Labels {
+		for _, label := range c.Target.Labels {
 			fmt.Printf("Would create label \"%s\" for repository \"%s\"\n", label.Name, owner+"/"+repo)
 		}
 	}
 }
 
-func ExecuteCreate(ctx context.Context, client *github.Client, target CreateTarget) {
-	for _, repository := range target.Repositories {
+func (c *Create) Execute(ctx context.Context, client *github.Client) {
+	for _, repository := range c.Target.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
 			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
 			os.Exit(1)
 		}
 		owner, repo := s[0], s[1]
-		for _, label := range target.Labels {
+		for _, label := range c.Target.Labels {
 			_, err := CreateLabel(ctx, client.Issues, label, owner, repo)
 			if err != nil {
 				fmt.Printf("error creating label \"%s\" for repository \"%s\": %s\n", label.Name, owner+"/"+repo, err)
