@@ -47,12 +47,17 @@ func main() {
 			fmt.Fprintf(os.Stderr, "error: %s\n", err)
 			os.Exit(1)
 		}
-		target := takolabel.GatherDelete()
+		delete_ := takolabel.Delete{}
+		err := delete_.Gather()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %s\n", err)
+			os.Exit(1)
+		}
 		if *deleteDryRun {
-			takolabel.DryRunDelete(target)
+			takolabel.DryRunDelete(delete_.Target)
 		} else {
 			if confirm() {
-				takolabel.ExecuteDelete(ctx, client, target)
+				takolabel.ExecuteDelete(ctx, client, delete_.Target)
 			} else {
 				os.Exit(0)
 			}

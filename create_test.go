@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParse(t *testing.T) {
+func TestCreateParse(t *testing.T) {
 	create := Create{}
 	err := create.Parse([]byte(`repositories:
   - some-owner/some-owner-repo-1
