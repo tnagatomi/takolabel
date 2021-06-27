@@ -31,11 +31,16 @@ func main() {
 			fmt.Fprintf(os.Stderr, "error: %s\n", err)
 			os.Exit(1)
 		}
-		target := takolabel.GatherCreate()
+		create := takolabel.Create{}
+		err := create.Gather()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %s\n", err)
+			os.Exit(1)
+		}
 		if *createDryRun {
-			takolabel.DryRunCreate(target)
+			takolabel.DryRunCreate(create.Target)
 		} else {
-			takolabel.ExecuteCreate(ctx, client, target)
+			takolabel.ExecuteCreate(ctx, client, create.Target)
 		}
 	case "delete":
 		if err := deleteCmd.Parse(os.Args[2:]); err != nil {

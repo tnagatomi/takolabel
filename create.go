@@ -4,56 +4,65 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/v33/github"
-	"github.com/spf13/viper"
-	"github.com/tommy6073/takolabel/config"
+	"gopkg.in/yaml.v3"
 	"os"
 	"strings"
 )
 
-func GatherCreate() CreateTarget {
-	viper.SetConfigName("takolabel_create")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	err := viper.MergeInConfig()
+type Create struct {
+	Target CreateTarget
+}
+
+type CreateTarget struct {
+	Repositories []string
+	Labels       []Label
+}
+
+func (c *Create) Parse(bytes []byte) error {
+	err := yaml.Unmarshal(bytes, &c.Target)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error reading config: %s\n", err)
-		os.Exit(1)
+		return err
+	}
+	return nil
+}
+
+func (c *Create) Gather() error {
+	content, err := os.ReadFile("takolabel_create.yaml")
+	if err != nil {
+		return err
 	}
 
-	var labels []config.Label
-	err = viper.UnmarshalKey("labels", &labels)
+	err = c.Parse(content)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error reading config: %s\n", err)
-		os.Exit(1)
+		return err
 	}
 
-	repositories := viper.GetStringSlice("repositories")
-	return CreateTarget{repositories, labels}
+	return nil
 }
 
 func DryRunCreate(target CreateTarget) {
-	for _, repository := range target.repositories {
+	for _, repository := range target.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
 			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
 			os.Exit(1)
 		}
 		owner, repo := s[0], s[1]
-		for _, label := range target.labels {
+		for _, label := range target.Labels {
 			fmt.Printf("Would create label \"%s\" for repository \"%s\"\n", label.Name, owner+"/"+repo)
 		}
 	}
 }
 
 func ExecuteCreate(ctx context.Context, client *github.Client, target CreateTarget) {
-	for _, repository := range target.repositories {
+	for _, repository := range target.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
 			fmt.Fprintf(os.Stderr, "repository %s is not properly formatted in setting yaml file\n", repository)
 			os.Exit(1)
 		}
 		owner, repo := s[0], s[1]
-		for _, label := range target.labels {
+		for _, label := range target.Labels {
 			_, err := CreateLabel(ctx, client.Issues, label, owner, repo)
 			if err != nil {
 				fmt.Printf("error creating label \"%s\" for repository \"%s\": %s\n", label.Name, owner+"/"+repo, err)
