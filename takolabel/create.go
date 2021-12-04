@@ -65,7 +65,7 @@ func (c *Create) Parse(bytes []byte) error {
 }
 
 func (c *Create) Gather() error {
-	content, err := os.ReadFile("takolabel_create.yaml")
+	content, err := os.ReadFile("takolabel_create.yml")
 	if err != nil {
 		return err
 	}

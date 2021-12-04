@@ -13,8 +13,8 @@
 
 # takolabel specific files
 takolabel.env
-takolabel_create.yaml
-takolabel_delete.yaml
+takolabel_create.yml
+takolabel_delete.yml
 
 # GoReleaser
 dist/
