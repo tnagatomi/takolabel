@@ -65,7 +65,7 @@ func (d *Delete) Parse(bytes []byte) error {
 }
 
 func (d *Delete) Gather() error {
-	content, err := os.ReadFile("takolabel_delete.yaml")
+	content, err := os.ReadFile("takolabel_delete.yml")
 	if err != nil {
 		return err
 	}

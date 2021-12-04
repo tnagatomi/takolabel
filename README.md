@@ -25,7 +25,7 @@ Set variables below in `takolabel.env` and put in the same directory as the one 
 
 ### Create Labels
 
-Write labels settings in `takolabel_create.yaml` and put in the same directory as the one where you run the command.
+Write labels settings in `takolabel_create.yml` and put in the same directory as the one where you run the command.
 
 e.g.
 
@@ -54,7 +54,7 @@ $ takolabel create
 
 ### Delete Labels
 
-Write labels settings in `takolabel_delete.yaml` and put in the same directory as the one where you run the command.
+Write labels settings in `takolabel_delete.yml` and put in the same directory as the one where you run the command.
 
 e.g.
 
