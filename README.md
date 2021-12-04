@@ -21,7 +21,7 @@ Set variables below in `takolabel.env` and put in the same directory as the one 
 - GITHUB_SERVER_URL (e.g. `https://ghe.example.com/`) (optional)
   - Set this variable if you want to work with repositories hosted on GitHub Enterprise server. Manipulations will take place in `github.com` repositories if you didn't set this variable.
 
-`-dry-run` for all operations are supported.
+`--dry-run` for all operations are supported.
 
 ### Create Labels
 
