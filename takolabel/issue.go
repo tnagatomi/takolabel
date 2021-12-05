@@ -22,7 +22,7 @@ package takolabel
 
 import (
 	"context"
-	"github.com/google/go-github/v33/github"
+	"github.com/google/go-github/v41/github"
 )
 
 func CreateLabel(ctx context.Context, issuesService *github.IssuesService, label Label, owner string, repo string) (*github.Label, error) {
