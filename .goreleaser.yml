@@ -6,7 +6,7 @@ builds:
   - env:
       - CGO_ENABLED=0
     ldflags:
-      - -s -w -X cmd.Version={{.Version}}
+      - -s -w -X github.com/tommy6073/takolabel/cmd.Version={{.Version}}
     goos:
       - linux
       - windows
