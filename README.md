@@ -1,8 +1,10 @@
 # takolabel
 
+`takolabel` is a CLI tool for manipulating GitHub Labels across multiple repositories.
+
 ## Installation
 
-### Mac
+### macOS
 
 ```console
 $ brew install tommy6073/tap/takolabel
@@ -10,7 +12,7 @@ $ brew install tommy6073/tap/takolabel
 
 ### Other platforms
 
-Download from [Releases page](https://github.com/tommy6073/takolabel/releases) in this repository.
+Download packaged binaries from [Releases page](https://github.com/tommy6073/takolabel/releases) in this repository.
 
 ## Usage
 
