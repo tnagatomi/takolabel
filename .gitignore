@@ -12,7 +12,6 @@
 *.out
 
 # takolabel specific files
-takolabel.env
 takolabel_create.yml
 takolabel_delete.yml
 
