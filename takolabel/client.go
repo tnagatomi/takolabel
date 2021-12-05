@@ -23,37 +23,28 @@ package takolabel
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-github/v33/github"
-	"github.com/spf13/viper"
+	"github.com/google/go-github/v41/github"
 	"golang.org/x/oauth2"
 	"os"
 )
 
-func GetGitHubClient(ctx context.Context) *github.Client {
-	viper.SetConfigName("takolabel")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(".")
-	err := viper.ReadInConfig()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "error reading config: %s\n", err)
-		os.Exit(1)
-	}
-
-	githubToken := viper.GetString("GITHUB_TOKEN")
+func GetGitHubClient(ctx context.Context) (*github.Client, error) {
+	githubToken := os.Getenv("TAKOLABEL_TOKEN")
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
 	)
 	tc := oauth2.NewClient(ctx, ts)
-	baseUrl := viper.GetString("GITHUB_SERVER_URL")
+
 	var client *github.Client
-	if baseUrl != "" {
-		client, err = github.NewEnterpriseClient(baseUrl, baseUrl, tc)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "error setting ghe client: %s\n", err)
-			os.Exit(1)
-		}
-	} else {
+	enterpriseURL := os.Getenv("TAKOLABEL_HOST")
+	if enterpriseURL == "" {
 		client = github.NewClient(tc)
+	} else {
+		var err error
+		client, err = github.NewEnterpriseClient(enterpriseURL, enterpriseURL, tc)
+		if err != nil {
+			return nil, fmt.Errorf("error setting ghe client: %s\n", err)
+		}
 	}
-	return client
+	return client, nil
 }

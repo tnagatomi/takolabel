@@ -23,7 +23,7 @@ package takolabel
 import (
 	"context"
 	"fmt"
-	"github.com/google/go-github/v33/github"
+	"github.com/google/go-github/v41/github"
 	"gopkg.in/yaml.v3"
 	"os"
 	"strings"

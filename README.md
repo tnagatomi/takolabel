@@ -16,12 +16,12 @@ Download packaged binaries from [Releases page](https://github.com/tommy6073/tak
 
 ## Usage
 
-Set variables below in `takolabel.env` and put in the same directory as the one where you run the command.
+Set environment variables below (via `export` command etc.).
 
-- GITHUB_TOKEN
-  - A token with `repo` scope is needed if it will be run on a private repository. `public_repo` scope will suffice if it's a public repository.
-- GITHUB_SERVER_URL (e.g. `https://ghe.example.com/`) (optional)
-  - Set this variable if you want to work with repositories hosted on GitHub Enterprise server. Manipulations will take place in `github.com` repositories if you didn't set this variable.
+- TAKOLABEL_TOKEN (required)
+  - GitHub Personal access token. A token with `repo` scope is needed if it will be run on a private repository. `public_repo` scope will suffice if it's a public repository.
+- TAKOLABEL_HOST (optional)
+  - Set this variable to the host URL (e.g. `https://ghe.example.com/`) if you want to work with repositories hosted on GitHub Enterprise Server. Manipulations will take place in `github.com` repositories if you didn't set this variable.
 
 `--dry-run` for all operations are supported.
 

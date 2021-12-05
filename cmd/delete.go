@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/tommy6073/takolabel/takolabel"
 	"os"
@@ -33,17 +34,20 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete labels specified in takolabel_delete.yml",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
-		client := takolabel.GetGitHubClient(ctx)
+		client, err := takolabel.GetGitHubClient(ctx)
+		if err != nil {
+			return fmt.Errorf("couldn't get github client: %v", err)
+		}
 
-		delete_ := takolabel.Delete{}
-		if err := delete_.Gather(); err != nil {
-			return err
+		d := takolabel.Delete{}
+		if err := d.Gather(); err != nil {
+			return fmt.Errorf("couldn't gather delete: %v", err)
 		}
 		if dryRun {
-			delete_.DryRun()
+			d.DryRun()
 		} else {
 			if takolabel.Confirm() {
-				delete_.Execute(ctx, client)
+				d.Execute(ctx, client)
 			} else {
 				os.Exit(0)
 			}
