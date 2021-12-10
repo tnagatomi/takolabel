@@ -44,12 +44,12 @@ type DeleteTarget struct {
 func (d *Delete) Gather() error {
 	content, err := os.ReadFile("takolabel_delete.yml")
 	if err != nil {
-		return err
+		return fmt.Errorf("read file failed: %v", err)
 	}
 
 	target, err := ParseDelete(content)
 	if err != nil {
-		return err
+		return fmt.Errorf("parse delete failed: %v", err)
 	}
 	d.Target = target
 

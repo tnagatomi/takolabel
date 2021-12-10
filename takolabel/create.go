@@ -44,7 +44,7 @@ type CreateTarget struct {
 func (c *Create) Gather() error {
 	content, err := os.ReadFile("takolabel_create.yml")
 	if err != nil {
-		return err
+		return fmt.Errorf("read file failed: %v", err)
 	}
 
 	target, err := ParseCreate(content)

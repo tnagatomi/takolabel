@@ -49,7 +49,7 @@ func ParseDelete(bytes []byte) (DeleteTarget, error) {
 	targetConfig := DeleteTargetConfig{}
 	err := yaml.Unmarshal(bytes, &targetConfig)
 	if err != nil {
-		return DeleteTarget{}, err
+		return DeleteTarget{}, fmt.Errorf("yaml unmarshal failed: %v", err)
 	}
 
 	target := DeleteTarget{Labels: targetConfig.Labels}
