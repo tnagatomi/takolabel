@@ -24,7 +24,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/v41/github"
+	"gopkg.in/yaml.v3"
 	"os"
+	"strings"
 )
 
 type Delete struct {
@@ -41,17 +43,34 @@ type DeleteTarget struct {
 	Labels       []string
 }
 
+func (d *Delete) ParseDelete(bytes []byte) error {
+	targetConfig := DeleteTargetConfig{}
+	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
+		return fmt.Errorf("yaml unmarshal failed: %v", err)
+	}
+
+	target := DeleteTarget{Labels: targetConfig.Labels}
+	for _, repository := range targetConfig.Repositories {
+		s := strings.Split(repository, "/")
+		if len(s) != 2 {
+			return fmt.Errorf("repository %s is not properly formatted in setting yaml file", repository)
+		}
+		target.Repositories = append(target.Repositories, Repository{s[0], s[1]})
+	}
+
+	d.Target = target
+	return nil
+}
+
 func (d *Delete) Gather() error {
 	content, err := os.ReadFile("takolabel_delete.yml")
 	if err != nil {
 		return fmt.Errorf("read file failed: %v", err)
 	}
 
-	target, err := ParseDelete(content)
-	if err != nil {
+	if err := d.ParseDelete(content); err != nil {
 		return fmt.Errorf("parse delete failed: %v", err)
 	}
-	d.Target = target
 
 	return nil
 }
