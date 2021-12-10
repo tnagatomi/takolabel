@@ -25,9 +25,8 @@ import (
 	"testing"
 )
 
-func TestDeleteParse(t *testing.T) {
-	delete_ := Delete{}
-	err := delete_.Parse([]byte(`repositories:
+func TestParseDelete(t *testing.T) {
+	got, err := ParseDelete([]byte(`repositories:
   - some-owner/some-owner-repo-1
   - some-owner/some-owner-repo-2
   - another-owner/another-owner-repo-1
@@ -53,7 +52,7 @@ labels:
 		},
 	}
 
-	if !reflect.DeepEqual(delete_.Target, want) {
-		t.Errorf("got %v want %v", delete_.Target, want)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
 	}
 }

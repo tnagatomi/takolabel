@@ -44,3 +44,22 @@ func ParseCreate(bytes []byte) (CreateTarget, error) {
 
 	return target, nil
 }
+
+func ParseDelete(bytes []byte) (DeleteTarget, error) {
+	targetConfig := DeleteTargetConfig{}
+	err := yaml.Unmarshal(bytes, &targetConfig)
+	if err != nil {
+		return DeleteTarget{}, err
+	}
+
+	target := DeleteTarget{Labels: targetConfig.Labels}
+	for _, repository := range targetConfig.Repositories {
+		s := strings.Split(repository, "/")
+		if len(s) != 2 {
+			return DeleteTarget{}, fmt.Errorf("repository %s is not properly formatted in setting yaml file", repository)
+		}
+		target.Repositories = append(target.Repositories, Repository{s[0], s[1]})
+	}
+
+	return target, nil
+}
