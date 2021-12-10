@@ -49,7 +49,7 @@ func (c *Create) Gather() error {
 
 	target, err := ParseCreate(content)
 	if err != nil {
-		return err
+		return fmt.Errorf("parse create failed: %v", err)
 	}
 	c.Target = target
 

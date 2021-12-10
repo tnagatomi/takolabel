@@ -30,7 +30,7 @@ func ParseCreate(bytes []byte) (CreateTarget, error) {
 	targetConfig := CreateTargetConfig{}
 	err := yaml.Unmarshal(bytes, &targetConfig)
 	if err != nil {
-		return CreateTarget{}, err
+		return CreateTarget{}, fmt.Errorf("yaml unmarshal failed: %v", err)
 	}
 
 	target := CreateTarget{Labels: targetConfig.Labels}
