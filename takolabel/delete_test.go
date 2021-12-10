@@ -27,7 +27,7 @@ import (
 
 func TestParseDelete(t *testing.T) {
 	d := Delete{}
-	err := d.ParseDelete([]byte(`repositories:
+	err := d.Parse([]byte(`repositories:
   - some-owner/some-owner-repo-1
   - some-owner/some-owner-repo-2
   - another-owner/another-owner-repo-1

@@ -43,7 +43,7 @@ type DeleteTarget struct {
 	Labels       []string
 }
 
-func (d *Delete) ParseDelete(bytes []byte) error {
+func (d *Delete) Parse(bytes []byte) error {
 	targetConfig := DeleteTargetConfig{}
 	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
 		return fmt.Errorf("yaml unmarshal failed: %v", err)
@@ -68,7 +68,7 @@ func (d *Delete) Gather() error {
 		return fmt.Errorf("read file failed: %v", err)
 	}
 
-	if err := d.ParseDelete(content); err != nil {
+	if err := d.Parse(content); err != nil {
 		return fmt.Errorf("parse delete failed: %v", err)
 	}
 

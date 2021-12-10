@@ -43,7 +43,7 @@ type CreateTarget struct {
 	Labels       Labels
 }
 
-func (c *Create) ParseCreate(bytes []byte) error {
+func (c *Create) Parse(bytes []byte) error {
 	targetConfig := CreateTargetConfig{}
 	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
 		return fmt.Errorf("yaml unmarshal failed: %v", err)
@@ -68,7 +68,7 @@ func (c *Create) Gather() error {
 		return fmt.Errorf("read file failed: %v", err)
 	}
 
-	if err := c.ParseCreate(content); err != nil {
+	if err := c.Parse(content); err != nil {
 		return fmt.Errorf("parse create failed: %v", err)
 	}
 

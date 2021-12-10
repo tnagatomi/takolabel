@@ -27,7 +27,7 @@ import (
 
 func TestParseCreate(t *testing.T) {
 	c := Create{}
-	err := c.ParseCreate([]byte(`repositories:
+	err := c.Parse([]byte(`repositories:
   - some-owner/some-owner-repo-1
   - some-owner/some-owner-repo-2
   - another-owner/another-owner-repo-1
