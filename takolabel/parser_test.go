@@ -73,3 +73,35 @@ labels:
 		t.Errorf("got %v want %v", got, want)
 	}
 }
+
+func TestParseDelete(t *testing.T) {
+	got, err := ParseDelete([]byte(`repositories:
+  - some-owner/some-owner-repo-1
+  - some-owner/some-owner-repo-2
+  - another-owner/another-owner-repo-1
+labels:
+  - Label 1
+  - Label 2
+  - Label 3
+`))
+	if err != nil {
+		t.Fatalf("error: %q", err)
+	}
+
+	want := DeleteTarget{
+		Repositories: []Repository{
+			{"some-owner", "some-owner-repo-1"},
+			{"some-owner", "some-owner-repo-2"},
+			{"another-owner", "another-owner-repo-1"},
+		},
+		Labels: []string{
+			"Label 1",
+			"Label 2",
+			"Label 3",
+		},
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %v want %v", got, want)
+	}
+}
