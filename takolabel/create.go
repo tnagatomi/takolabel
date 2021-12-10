@@ -24,9 +24,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/go-github/v41/github"
-	"gopkg.in/yaml.v3"
 	"os"
-	"strings"
 )
 
 type Create struct {
@@ -43,37 +41,17 @@ type CreateTarget struct {
 	Labels       []Label
 }
 
-func (c *Create) Parse(bytes []byte) error {
-	targetConfig := CreateTargetConfig{}
-	err := yaml.Unmarshal(bytes, &targetConfig)
-	if err != nil {
-		return err
-	}
-
-	target := CreateTarget{Labels: targetConfig.Labels}
-	for _, repository := range targetConfig.Repositories {
-		s := strings.Split(repository, "/")
-		if len(s) != 2 {
-			return fmt.Errorf("repository %s is not properly formatted in setting yaml file", repository)
-		}
-		target.Repositories = append(target.Repositories, Repository{s[0], s[1]})
-	}
-
-	c.Target = target
-
-	return nil
-}
-
 func (c *Create) Gather() error {
 	content, err := os.ReadFile("takolabel_create.yml")
 	if err != nil {
 		return err
 	}
 
-	err = c.Parse(content)
+	target, err := ParseCreate(content)
 	if err != nil {
 		return err
 	}
+	c.Target = target
 
 	return nil
 }

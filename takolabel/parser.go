@@ -21,55 +21,26 @@
 package takolabel
 
 import (
-	"reflect"
-	"testing"
+	"fmt"
+	"gopkg.in/yaml.v3"
+	"strings"
 )
 
-func TestParseCreate(t *testing.T) {
-	got, err := ParseCreate([]byte(`repositories:
-  - some-owner/some-owner-repo-1
-  - some-owner/some-owner-repo-2
-  - another-owner/another-owner-repo-1
-labels:
-  - name: Label 1
-    description: This is the label one 
-    color: ff0000
-  - name: Label 2
-    description: This is the label two
-    color: 00ff00
-  - name: Label 3
-    description: This is the label three
-    color: 0000ff
-`))
+func ParseCreate(bytes []byte) (CreateTarget, error) {
+	targetConfig := CreateTargetConfig{}
+	err := yaml.Unmarshal(bytes, &targetConfig)
 	if err != nil {
-		t.Fatalf("error: %q", err)
-	}
-	want := CreateTarget{
-		Repositories: []Repository{
-			{"some-owner", "some-owner-repo-1"},
-			{"some-owner", "some-owner-repo-2"},
-			{"another-owner", "another-owner-repo-1"},
-		},
-		Labels: []Label{
-			{
-				Name:        "Label 1",
-				Description: "This is the label one",
-				Color:       "ff0000",
-			},
-			{
-				Name:        "Label 2",
-				Description: "This is the label two",
-				Color:       "00ff00",
-			},
-			{
-				Name:        "Label 3",
-				Description: "This is the label three",
-				Color:       "0000ff",
-			},
-		},
+		return CreateTarget{}, err
 	}
 
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("got %v want %v", got, want)
+	target := CreateTarget{Labels: targetConfig.Labels}
+	for _, repository := range targetConfig.Repositories {
+		s := strings.Split(repository, "/")
+		if len(s) != 2 {
+			return CreateTarget{}, fmt.Errorf("repository %s is not properly formatted in setting yaml file", repository)
+		}
+		target.Repositories = append(target.Repositories, Repository{s[0], s[1]})
 	}
+
+	return target, nil
 }
