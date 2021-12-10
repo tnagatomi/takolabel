@@ -45,12 +45,12 @@ labels:
 		t.Fatalf("error: %q", err)
 	}
 	want := CreateTarget{
-		Repositories: []Repository{
+		Repositories: Repositories{
 			{"some-owner", "some-owner-repo-1"},
 			{"some-owner", "some-owner-repo-2"},
 			{"another-owner", "another-owner-repo-1"},
 		},
-		Labels: []Label{
+		Labels: Labels{
 			{
 				Name:        "Label 1",
 				Description: "This is the label one",
@@ -89,7 +89,7 @@ labels:
 	}
 
 	want := DeleteTarget{
-		Repositories: []Repository{
+		Repositories: Repositories{
 			{"some-owner", "some-owner-repo-1"},
 			{"some-owner", "some-owner-repo-2"},
 			{"another-owner", "another-owner-repo-1"},

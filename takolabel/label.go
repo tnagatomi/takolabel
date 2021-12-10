@@ -25,3 +25,5 @@ type Label struct {
 	Description string `yaml:"description"`
 	Color       string `yaml:"color"`
 }
+
+type Labels []Label

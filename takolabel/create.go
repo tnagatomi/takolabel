@@ -33,12 +33,12 @@ type Create struct {
 
 type CreateTargetConfig struct {
 	Repositories []string
-	Labels       []Label
+	Labels       Labels
 }
 
 type CreateTarget struct {
-	Repositories []Repository
-	Labels       []Label
+	Repositories Repositories
+	Labels       Labels
 }
 
 func (c *Create) Gather() error {

@@ -37,7 +37,7 @@ type DeleteTargetConfig struct {
 }
 
 type DeleteTarget struct {
-	Repositories []Repository
+	Repositories Repositories
 	Labels       []string
 }
 
