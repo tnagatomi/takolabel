@@ -28,6 +28,21 @@ import (
 	"os"
 )
 
+type Repository struct {
+	Owner string
+	Repo  string
+}
+
+type Repositories []Repository
+
+type Label struct {
+	Name        string `yaml:"name"`
+	Description string `yaml:"description"`
+	Color       string `yaml:"color"`
+}
+
+type Labels []Label
+
 func GetGitHubClient(ctx context.Context) (*github.Client, error) {
 	githubToken := os.Getenv("TAKOLABEL_TOKEN")
 	ts := oauth2.StaticTokenSource(
@@ -47,4 +62,19 @@ func GetGitHubClient(ctx context.Context) (*github.Client, error) {
 		}
 	}
 	return client, nil
+}
+
+func CreateLabel(ctx context.Context, issuesService *github.IssuesService, label Label, owner string, repo string) (*github.Label, error) {
+	githubLabel := &github.Label{
+		Name:        github.String(label.Name),
+		Description: github.String(label.Description),
+		Color:       github.String(label.Color),
+	}
+	createdLabel, _, err := issuesService.CreateLabel(ctx, owner, repo, githubLabel)
+	return createdLabel, err
+}
+
+func DeleteLabel(ctx context.Context, issuesService *github.IssuesService, label string, owner string, repo string) error {
+	_, err := issuesService.DeleteLabel(ctx, owner, repo, label)
+	return err
 }

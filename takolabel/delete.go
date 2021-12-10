@@ -39,15 +39,14 @@ type DeleteTargetConfig struct {
 }
 
 type DeleteTarget struct {
-	Repositories []Repository
+	Repositories Repositories
 	Labels       []string
 }
 
 func (d *Delete) Parse(bytes []byte) error {
 	targetConfig := DeleteTargetConfig{}
-	err := yaml.Unmarshal(bytes, &targetConfig)
-	if err != nil {
-		return err
+	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
+		return fmt.Errorf("yaml unmarshal failed: %v", err)
 	}
 
 	target := DeleteTarget{Labels: targetConfig.Labels}
@@ -60,19 +59,17 @@ func (d *Delete) Parse(bytes []byte) error {
 	}
 
 	d.Target = target
-
 	return nil
 }
 
 func (d *Delete) Gather() error {
 	content, err := os.ReadFile("takolabel_delete.yml")
 	if err != nil {
-		return err
+		return fmt.Errorf("read file failed: %v", err)
 	}
 
-	err = d.Parse(content)
-	if err != nil {
-		return err
+	if err := d.Parse(content); err != nil {
+		return fmt.Errorf("parse delete failed: %v", err)
 	}
 
 	return nil

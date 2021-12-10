@@ -35,19 +35,18 @@ type Create struct {
 
 type CreateTargetConfig struct {
 	Repositories []string
-	Labels       []Label
+	Labels       Labels
 }
 
 type CreateTarget struct {
-	Repositories []Repository
-	Labels       []Label
+	Repositories Repositories
+	Labels       Labels
 }
 
 func (c *Create) Parse(bytes []byte) error {
 	targetConfig := CreateTargetConfig{}
-	err := yaml.Unmarshal(bytes, &targetConfig)
-	if err != nil {
-		return err
+	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
+		return fmt.Errorf("yaml unmarshal failed: %v", err)
 	}
 
 	target := CreateTarget{Labels: targetConfig.Labels}
@@ -60,19 +59,17 @@ func (c *Create) Parse(bytes []byte) error {
 	}
 
 	c.Target = target
-
 	return nil
 }
 
 func (c *Create) Gather() error {
 	content, err := os.ReadFile("takolabel_create.yml")
 	if err != nil {
-		return err
+		return fmt.Errorf("read file failed: %v", err)
 	}
 
-	err = c.Parse(content)
-	if err != nil {
-		return err
+	if err := c.Parse(content); err != nil {
+		return fmt.Errorf("parse create failed: %v", err)
 	}
 
 	return nil
