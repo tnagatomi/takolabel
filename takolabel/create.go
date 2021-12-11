@@ -43,6 +43,19 @@ type CreateTarget struct {
 	Labels       Labels
 }
 
+func (c *Create) Gather() error {
+	content, err := os.ReadFile("takolabel_create.yml")
+	if err != nil {
+		return fmt.Errorf("read file failed: %v", err)
+	}
+
+	if err := c.Parse(content); err != nil {
+		return fmt.Errorf("parse create failed: %v", err)
+	}
+
+	return nil
+}
+
 func (c *Create) Parse(bytes []byte) error {
 	targetConfig := CreateTargetConfig{}
 	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
@@ -59,19 +72,6 @@ func (c *Create) Parse(bytes []byte) error {
 	}
 
 	c.Target = target
-	return nil
-}
-
-func (c *Create) Gather() error {
-	content, err := os.ReadFile("takolabel_create.yml")
-	if err != nil {
-		return fmt.Errorf("read file failed: %v", err)
-	}
-
-	if err := c.Parse(content); err != nil {
-		return fmt.Errorf("parse create failed: %v", err)
-	}
-
 	return nil
 }
 
