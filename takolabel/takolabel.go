@@ -43,7 +43,7 @@ type Label struct {
 
 type Labels []Label
 
-func GetGitHubClient(ctx context.Context) (*github.Client, error) {
+func GitHubClient(ctx context.Context) (*github.Client, error) {
 	githubToken := os.Getenv("TAKOLABEL_TOKEN")
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},

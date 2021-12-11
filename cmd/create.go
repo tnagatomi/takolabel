@@ -33,7 +33,7 @@ var createCmd = &cobra.Command{
 	Short: "Create labels specified in takolabel_create.yml",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
-		client, err := takolabel.GetGitHubClient(ctx)
+		client, err := takolabel.GitHubClient(ctx)
 		if err != nil {
 			return fmt.Errorf("couldn't get github client: %v", err)
 		}
