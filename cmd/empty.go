@@ -23,14 +23,16 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/spf13/cobra"
 	"github.com/tommy6073/takolabel/takolabel"
+	"os"
+
+	"github.com/spf13/cobra"
 )
 
-// createCmd represents the create command
-var createCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create labels specified in takolabel_create.yml",
+// emptyCmd represents the empty command
+var emptyCmd = &cobra.Command{
+	Use:   "empty",
+	Short: "Delete labels specified in takolabel_delete.yml",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := context.Background()
 		client, err := takolabel.GitHubClient(ctx)
@@ -38,19 +40,27 @@ var createCmd = &cobra.Command{
 			return fmt.Errorf("couldn't get github client: %v", err)
 		}
 
-		c := takolabel.Create{}
-		if err = c.Gather(); err != nil {
-			return fmt.Errorf("couldn't gather create: %v", err)
+		e := takolabel.Empty{}
+		if err = e.Gather(); err != nil {
+			return fmt.Errorf("couldn't gather empty: %v", err)
 		}
 		if dryRun {
-			c.DryRun()
+			if err = e.DryRun(ctx, client); err != nil {
+				return fmt.Errorf("empty dry-run failed: %v", err)
+			}
 		} else {
-			c.Execute(ctx, client)
+			if takolabel.Confirm() {
+				if err = e.Execute(ctx, client); err != nil {
+					return fmt.Errorf("empty execution failed: %v", err)
+				}
+			} else {
+				os.Exit(0)
+			}
 		}
-		return err
+		return nil
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(emptyCmd)
 }

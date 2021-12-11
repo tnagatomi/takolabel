@@ -29,40 +29,38 @@ import (
 	"strings"
 )
 
-type Delete struct {
-	Target DeleteTarget
+type Empty struct {
+	Target EmptyTarget
 }
 
-type DeleteTargetConfig struct {
+type EmptyTargetConfig struct {
 	Repositories []string
-	Labels       []string
 }
 
-type DeleteTarget struct {
+type EmptyTarget struct {
 	Repositories Repositories
-	Labels       []string
 }
 
-func (d *Delete) Gather() error {
-	content, err := os.ReadFile("takolabel_delete.yml")
+func (e *Empty) Gather() error {
+	content, err := os.ReadFile("takolabel_empty.yml")
 	if err != nil {
 		return fmt.Errorf("read file failed: %v", err)
 	}
 
-	if err := d.Parse(content); err != nil {
-		return fmt.Errorf("parse delete failed: %v", err)
+	if err := e.Parse(content); err != nil {
+		return fmt.Errorf("parse empty failed: %v", err)
 	}
 
 	return nil
 }
 
-func (d *Delete) Parse(bytes []byte) error {
-	targetConfig := DeleteTargetConfig{}
+func (e *Empty) Parse(bytes []byte) error {
+	targetConfig := EmptyTargetConfig{}
 	if err := yaml.Unmarshal(bytes, &targetConfig); err != nil {
 		return fmt.Errorf("yaml unmarshal failed: %v", err)
 	}
 
-	target := DeleteTarget{Labels: targetConfig.Labels}
+	target := EmptyTarget{}
 	for _, repository := range targetConfig.Repositories {
 		s := strings.Split(repository, "/")
 		if len(s) != 2 {
@@ -71,27 +69,39 @@ func (d *Delete) Parse(bytes []byte) error {
 		target.Repositories = append(target.Repositories, Repository{s[0], s[1]})
 	}
 
-	d.Target = target
+	e.Target = target
 	return nil
 }
 
-func (d *Delete) DryRun() {
-	for _, repository := range d.Target.Repositories {
-		for _, label := range d.Target.Labels {
-			fmt.Printf("would delete label \"%s\" for repository \"%s\"\n", label, repository.Owner+"/"+repository.Repo)
+func (e *Empty) DryRun(ctx context.Context, client *github.Client) error {
+	opt := &github.ListOptions{}
+	for _, repository := range e.Target.Repositories {
+		labels, err := ListLabels(ctx, client.Issues, repository.Owner, repository.Repo, opt)
+		if err != nil {
+			return err
+		}
+		for _, label := range labels {
+			fmt.Printf("would delete label \"%s\" for repository \"%s\"\n", *label.Name, repository.Owner+"/"+repository.Repo)
 		}
 	}
+	return nil
 }
 
-func (d *Delete) Execute(ctx context.Context, client *github.Client) {
-	for _, repository := range d.Target.Repositories {
-		for _, label := range d.Target.Labels {
-			err := DeleteLabel(ctx, client.Issues, label, repository.Owner, repository.Repo)
+func (e *Empty) Execute(ctx context.Context, client *github.Client) error {
+	opt := &github.ListOptions{}
+	for _, repository := range e.Target.Repositories {
+		labels, err := ListLabels(ctx, client.Issues, repository.Owner, repository.Repo, opt)
+		if err != nil {
+			return err
+		}
+		for _, label := range labels {
+			err := DeleteLabel(ctx, client.Issues, *label.Name, repository.Owner, repository.Repo)
 			if err != nil {
 				fmt.Printf("error deleting label \"%s\" for repository \"%s\": %s\n", label, repository.Owner+"/"+repository.Repo, err)
 			} else {
-				fmt.Printf("deleted label \"%s\" for repository \"%s\"\n", label, repository.Owner+"/"+repository.Repo)
+				fmt.Printf("deleted label \"%s\" for repository \"%s\"\n", *label.Name, repository.Owner+"/"+repository.Repo)
 			}
 		}
 	}
+	return nil
 }

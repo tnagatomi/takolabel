@@ -27,6 +27,12 @@ Set environment variables below (via `export` command etc.).
 
 ### Create Labels
 
+```console
+$ takolabel create
+```
+
+Create labels to the repositories specified in the YAML file.
+
 Write labels settings in `takolabel_create.yml` and put in the same directory as the one where you run the command.
 
 e.g.
@@ -48,13 +54,13 @@ labels:
     color: 0000ff
 ```
 
-Run command.
+### Delete Labels
 
 ```console
-$ takolabel create
+$ takolabel delete
 ```
 
-### Delete Labels
+Delete labels in the repositories specified in the YAML file.
 
 Write labels settings in `takolabel_delete.yml` and put in the same directory as the one where you run the command.
 
@@ -71,8 +77,21 @@ labels:
   - Label 3
 ```
 
-Run command (you will be confirmed).
+### Empty Labels
 
 ```console
-$ takolabel delete
+$ takolabel empty
+```
+
+Delete all the labels in the repositories specified in the YAML file.
+
+Write repositories settings in `takolabel_empty.yml` and put in the same directory as the one where you run the command.
+
+e.g.
+
+```yaml
+repositories:
+  - some-owner/some-owner-repo-1
+  - some-owner/some-owner-repo-2
+  - another-owner/another-owner-repo-1
 ```
