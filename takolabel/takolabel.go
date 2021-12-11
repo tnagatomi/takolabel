@@ -78,3 +78,11 @@ func DeleteLabel(ctx context.Context, issuesService *github.IssuesService, label
 	_, err := issuesService.DeleteLabel(ctx, owner, repo, label)
 	return err
 }
+
+func ListLabels(ctx context.Context, issuesService *github.IssuesService, owner string, repo string, opt *github.ListOptions) ([]*github.Label, error) {
+	labels, _, err := issuesService.ListLabels(ctx, owner, repo, opt)
+	if err != nil {
+		return nil, fmt.Errorf("list labels failed: %v", err)
+	}
+	return labels, nil
+}
