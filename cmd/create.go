@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/tommy6073/takolabel/takolabel"
@@ -32,22 +31,21 @@ var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create labels specified in takolabel_create.yml",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := context.Background()
-		client, err := takolabel.GitHubClient(ctx)
+		t, err := takolabel.NewTakolabel(dryRun)
 		if err != nil {
-			return fmt.Errorf("couldn't get github client: %v", err)
+			return fmt.Errorf("failed initialization: %v", err)
 		}
 
-		c := takolabel.Create{}
-		if err = c.Gather(); err != nil {
-			return fmt.Errorf("couldn't gather create: %v", err)
+		c := takolabel.ConfigCreate{}
+		if err := c.Parse("takolabel_create.yml"); err != nil {
+			return fmt.Errorf("failed parsing create config: %v", err)
 		}
-		if dryRun {
-			c.DryRun()
-		} else {
-			c.Execute(ctx, client)
+
+		if err := t.Create(c.Labels, c.Repos); err != nil {
+			return fmt.Errorf("failed creating labels: %v", err)
 		}
-		return err
+
+		return nil
 	},
 }
 

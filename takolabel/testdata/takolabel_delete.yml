@@ -1,0 +1,7 @@
+repositories:
+  - some-owner/some-owner-repo-1
+  - another-owner/another-owner-repo-1
+labels:
+  - Label 1
+  - Label 2
+  - Label 3

@@ -21,41 +21,26 @@
 package takolabel
 
 import (
-	"reflect"
+	"github.com/google/go-cmp/cmp"
 	"testing"
 )
 
-func TestParseCreate(t *testing.T) {
-	c := Create{}
-	err := c.Parse([]byte(`repositories:
-  - some-owner/some-owner-repo-1
-  - some-owner/some-owner-repo-2
-  - another-owner/another-owner-repo-1
-labels:
-  - name: Label 1
-    description: This is the label one 
-    color: ff0000
-  - name: Label 2
-    description: This is the label two
-    color: 00ff00
-  - name: Label 3
-    description: This is the label three
-    color: 0000ff
-`))
+func TestConfigCreateParse(t *testing.T) {
+	c := ConfigCreate{}
+	err := c.Parse("testdata/takolabel_create.yml")
 	if err != nil {
-		t.Fatalf("error: %q", err)
+		t.Fatalf("error parsing config: %v", err)
 	}
-	want := CreateTarget{
-		Repositories: Repositories{
+	want := ConfigCreate{
+		Repos: []Repo{
 			{"some-owner", "some-owner-repo-1"},
 			{"some-owner", "some-owner-repo-2"},
 			{"another-owner", "another-owner-repo-1"},
 		},
-		Labels: Labels{
+		Labels: []Label{
 			{
-				Name:        "Label 1",
-				Description: "This is the label one",
-				Color:       "ff0000",
+				Name:  "Label 1",
+				Color: "ff0000",
 			},
 			{
 				Name:        "Label 2",
@@ -70,7 +55,48 @@ labels:
 		},
 	}
 
-	if !reflect.DeepEqual(c.Target, want) {
-		t.Errorf("got %v want %v", c.Target, want)
+	if diff := cmp.Diff(want, c); diff != "" {
+		t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestConfigDeleteParse(t *testing.T) {
+	c := ConfigDelete{}
+	err := c.Parse("testdata/takolabel_delete.yml")
+	if err != nil {
+		t.Fatalf("error parsing config: %v", err)
+	}
+	want := ConfigDelete{
+		Repos: []Repo{
+			{"some-owner", "some-owner-repo-1"},
+			{"another-owner", "another-owner-repo-1"},
+		},
+		Labels: []string{
+			"Label 1",
+			"Label 2",
+			"Label 3",
+		},
+	}
+
+	if diff := cmp.Diff(want, c); diff != "" {
+		t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestConfigEmptyParse(t *testing.T) {
+	c := ConfigEmpty{}
+	err := c.Parse("testdata/takolabel_delete.yml")
+	if err != nil {
+		t.Fatalf("error parsing config: %v", err)
+	}
+	want := ConfigEmpty{
+		Repos: []Repo{
+			{"some-owner", "some-owner-repo-1"},
+			{"another-owner", "another-owner-repo-1"},
+		},
+	}
+
+	if diff := cmp.Diff(want, c); diff != "" {
+		t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
 	}
 }

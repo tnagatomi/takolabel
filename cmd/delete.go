@@ -21,11 +21,9 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/tommy6073/takolabel/takolabel"
-	"os"
 )
 
 // deleteCmd represents the delete command
@@ -33,24 +31,22 @@ var deleteCmd = &cobra.Command{
 	Use:   "delete",
 	Short: "Delete labels specified in takolabel_delete.yml",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := context.Background()
-		client, err := takolabel.GitHubClient(ctx)
+		t, err := takolabel.NewTakolabel(dryRun)
 		if err != nil {
-			return fmt.Errorf("couldn't get github client: %v", err)
+			return fmt.Errorf("failed initialization: %v", err)
+		}
+		c := takolabel.ConfigDelete{}
+		if err := c.Parse("takolabel_delete.yml"); err != nil {
+			return fmt.Errorf("failed parsing create config: %v", err)
 		}
 
-		d := takolabel.Delete{}
-		if err := d.Gather(); err != nil {
-			return fmt.Errorf("couldn't gather delete: %v", err)
+		if !dryRun && !confirm() {
+			fmt.Printf("Canceled execution\n")
+			return nil
 		}
-		if dryRun {
-			d.DryRun()
-		} else {
-			if takolabel.Confirm() {
-				d.Execute(ctx, client)
-			} else {
-				os.Exit(0)
-			}
+
+		if err := t.Delete(c.Labels, c.Repos); err != nil {
+			return fmt.Errorf("failed deleting labels: %v", err)
 		}
 		return nil
 	},
