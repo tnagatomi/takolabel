@@ -21,41 +21,30 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
-	"github.com/tommy6073/takolabel/takolabel"
-	"os"
-
 	"github.com/spf13/cobra"
+	"github.com/tommy6073/takolabel/takolabel"
 )
 
 // emptyCmd represents the empty command
 var emptyCmd = &cobra.Command{
 	Use:   "empty",
-	Short: "Delete labels specified in takolabel_delete.yml",
+	Short: "Delete labels specified in takolabel_empty.yml",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := context.Background()
-		client, err := takolabel.GitHubClient(ctx)
+		t, err := takolabel.NewTakolabel(dryRun)
 		if err != nil {
-			return fmt.Errorf("couldn't get github client: %v", err)
+			return fmt.Errorf("failed initialization: %v", err)
+		}
+		c := takolabel.ConfigEmpty{}
+		c.Parse("takolabel_empty.yml")
+
+		if !dryRun && !confirm() {
+			fmt.Printf("Canceled execution\n")
+			return nil
 		}
 
-		e := takolabel.Empty{}
-		if err = e.Gather(); err != nil {
-			return fmt.Errorf("couldn't gather empty: %v", err)
-		}
-		if dryRun {
-			if err = e.DryRun(ctx, client); err != nil {
-				return fmt.Errorf("empty dry-run failed: %v", err)
-			}
-		} else {
-			if takolabel.Confirm() {
-				if err = e.Execute(ctx, client); err != nil {
-					return fmt.Errorf("empty execution failed: %v", err)
-				}
-			} else {
-				os.Exit(0)
-			}
+		if err := t.Empty(c.Repos); err != nil {
+			return fmt.Errorf("failed emptying labels: %v", err)
 		}
 		return nil
 	},

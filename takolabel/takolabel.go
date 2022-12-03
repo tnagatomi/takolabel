@@ -26,29 +26,25 @@ import (
 	"github.com/google/go-github/v41/github"
 	"golang.org/x/oauth2"
 	"os"
+	"strings"
 )
 
-type Repository struct {
-	Owner string
-	Repo  string
+// Takolabel composites github.Client and has dry-run option
+type Takolabel struct {
+	client *github.Client
+	dryRun bool
 }
 
-type Repositories []Repository
-
-type Label struct {
-	Name        string `yaml:"name"`
-	Description string `yaml:"description"`
-	Color       string `yaml:"color"`
-}
-
-type Labels []Label
-
-func GitHubClient(ctx context.Context) (*github.Client, error) {
+// NewTakolabel returns new Takolabel struct
+func NewTakolabel(dryRun bool) (*Takolabel, error) {
 	githubToken := os.Getenv("TAKOLABEL_TOKEN")
+	if githubToken == "" {
+		return nil, fmt.Errorf("TAKOLABEL_TOKEN environment variable is not set")
+	}
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: githubToken},
 	)
-	tc := oauth2.NewClient(ctx, ts)
+	tc := oauth2.NewClient(context.Background(), ts)
 
 	var client *github.Client
 	enterpriseURL := os.Getenv("TAKOLABEL_HOST")
@@ -61,28 +57,89 @@ func GitHubClient(ctx context.Context) (*github.Client, error) {
 			return nil, fmt.Errorf("error setting ghe client: %s\n", err)
 		}
 	}
-	return client, nil
+
+	return &Takolabel{
+		client: client,
+		dryRun: dryRun,
+	}, nil
 }
 
-func CreateLabel(ctx context.Context, issuesService *github.IssuesService, label Label, owner string, repo string) (*github.Label, error) {
-	githubLabel := &github.Label{
-		Name:        github.String(label.Name),
-		Description: github.String(label.Description),
-		Color:       github.String(label.Color),
+// Create GitHub labels for specified repositories with specified labels
+func (takolabel *Takolabel) Create(labels []Label, repos []Repo) error {
+	for _, r := range repos {
+		for _, l := range labels {
+			if takolabel.dryRun {
+				fmt.Printf("Would create label %s for repository %q\n", l.Name, r.Owner+"/"+r.Repo)
+				continue
+			}
+
+			label := &github.Label{
+				Name:        github.String(l.Name),
+				Description: github.String(l.Description),
+				Color:       github.String(l.Color),
+			}
+			_, _, err := takolabel.client.Issues.CreateLabel(context.Background(), r.Owner, r.Repo, label)
+
+			if err != nil {
+				if strings.Contains(err.Error(), "already_exists") {
+					fmt.Printf("Label %q already exists for repository %q\n", l.Name, r.Owner+"/"+r.Repo)
+					continue
+				}
+				fmt.Printf("error creating label %s for repository %q: %v\n", l.Name, r.Owner+"/"+r.Repo, err)
+				continue
+			}
+			fmt.Printf("Created label %s for repository %q\n", l.Name, r.Owner+"/"+r.Repo)
+		}
 	}
-	createdLabel, _, err := issuesService.CreateLabel(ctx, owner, repo, githubLabel)
-	return createdLabel, err
+
+	return nil
 }
 
-func DeleteLabel(ctx context.Context, issuesService *github.IssuesService, label string, owner string, repo string) error {
-	_, err := issuesService.DeleteLabel(ctx, owner, repo, label)
-	return err
-}
-
-func ListLabels(ctx context.Context, issuesService *github.IssuesService, owner string, repo string, opt *github.ListOptions) ([]*github.Label, error) {
-	labels, _, err := issuesService.ListLabels(ctx, owner, repo, opt)
-	if err != nil {
-		return nil, fmt.Errorf("list labels failed: %v", err)
+// Delete GitHub labels for specified repositories with specified labels
+func (takolabel *Takolabel) Delete(labels []string, repos []Repo) error {
+	for _, r := range repos {
+		for _, l := range labels {
+			if takolabel.dryRun {
+				fmt.Printf("Would delete label %s for repository %q\n", l, r.Owner+"/"+r.Repo)
+				continue
+			}
+			if _, err := takolabel.client.Issues.DeleteLabel(context.Background(), r.Owner, r.Repo, l); err != nil {
+				if strings.Contains(err.Error(), "404 Not Found") {
+					fmt.Printf("Label %q doesn't exist for repository %q\n", l, r.Owner+"/"+r.Repo)
+					continue
+				}
+				return fmt.Errorf("error deleting label %s for repository %q: %v", l, r.Owner+"/"+r.Repo, err)
+			}
+			fmt.Printf("Deleted label %s for t %s/%s\n", l, r.Owner, r.Repo)
+		}
 	}
-	return labels, nil
+
+	return nil
+}
+
+// Empty GitHub labels for specified repositories
+func (takolabel *Takolabel) Empty(repos []Repo) error {
+	for _, r := range repos {
+		labels, _, err := takolabel.client.Issues.ListLabels(context.Background(), r.Owner, r.Repo, nil)
+		if err != nil {
+			return fmt.Errorf("list labels failed: %v", err)
+		}
+
+		if takolabel.dryRun {
+			for _, l := range labels {
+				fmt.Printf("Would delete label %s for repository %q\n", *l.Name, r.Owner+"/"+r.Repo)
+			}
+			continue
+		}
+
+		for _, l := range labels {
+			_, err := takolabel.client.Issues.DeleteLabel(context.Background(), r.Owner, r.Repo, *l.Name)
+			if err != nil {
+				return fmt.Errorf("error deleting label %s for repository %q: %v\n", l, r.Owner+"/"+r.Repo, err)
+			} else {
+				fmt.Printf("Deleted label %s for repository %q\n", *l.Name, r.Owner+"/"+r.Repo)
+			}
+		}
+	}
+	return nil
 }
