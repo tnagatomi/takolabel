@@ -36,7 +36,9 @@ var emptyCmd = &cobra.Command{
 			return fmt.Errorf("failed initialization: %v", err)
 		}
 		c := takolabel.ConfigEmpty{}
-		c.Parse("takolabel_empty.yml")
+		if err := c.Parse("takolabel_empty.yml"); err != nil {
+			return fmt.Errorf("failed parsing create config: %v", err)
+		}
 
 		if !dryRun && !confirm() {
 			fmt.Printf("Canceled execution\n")
