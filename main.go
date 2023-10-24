@@ -20,7 +20,7 @@
 
 package main
 
-import "github.com/tommy6073/takolabel/cmd"
+import "github.com/tnagatomi/takolabel/cmd"
 
 func main() {
 	cmd.Execute()

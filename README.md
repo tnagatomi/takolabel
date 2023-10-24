@@ -7,12 +7,12 @@
 ### macOS
 
 ```console
-$ brew install tommy6073/tap/takolabel
+$ brew install tnagatomi/tap/takolabel
 ```
 
 ### Other platforms
 
-Download packaged binaries from [Releases page](https://github.com/tommy6073/takolabel/releases) in this repository.
+Download packaged binaries from [Releases page](https://github.com/tnagatomi/takolabel/releases) in this repository.
 
 ## Usage
 
