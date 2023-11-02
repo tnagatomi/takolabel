@@ -1,42 +1,36 @@
-before:
-  hooks:
-    - go mod tidy
-    - go generate ./...
-builds:
-  - env:
-      - CGO_ENABLED=0
-    ldflags:
-      - -s -w -X github.com/tommy6073/takolabel/cmd.Version={{.Version}}
-    goos:
-      - linux
-      - windows
-      - darwin
-archives:
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
-    format_overrides:
-      - goos: windows
-        format: zip
-checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ .Tag }}-next"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - '^docs:'
-      - '^test:'
+name: goreleaser
 
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: git fetch --force --tags
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 brews:
   -
     name: takolabel
-    tap:
-      owner: tommy6073
+    repository:
+      owner: tnagatomi
       name: homebrew-tap
     commit_author:
       name: Takayuki NAGATOMI
