@@ -3,7 +3,7 @@ module github.com/tnagatomi/takolabel
 go 1.17
 
 require (
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/google/go-github/v41 v41.0.0
 	github.com/spf13/cobra v1.7.0
 	golang.org/x/oauth2 v0.13.0
