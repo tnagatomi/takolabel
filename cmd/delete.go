@@ -23,7 +23,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/tommy6073/takolabel/takolabel"
+	"github.com/tnagatomi/takolabel/takolabel"
 )
 
 // deleteCmd represents the delete command

@@ -1,4 +1,4 @@
-module github.com/tommy6073/takolabel
+module github.com/tnagatomi/takolabel
 
 go 1.17
 
