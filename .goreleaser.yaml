@@ -1,0 +1,10 @@
+brews:
+  -
+    name: takolabel
+    repository:
+      owner: tnagatomi
+      name: homebrew-tap
+    commit_author:
+      name: Takayuki NAGATOMI
+      email: tommyt6073@gmail.com
+    license: "MIT"
