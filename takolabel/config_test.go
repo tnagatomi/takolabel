@@ -83,6 +83,41 @@ func TestConfigDeleteParse(t *testing.T) {
 	}
 }
 
+func TestConfigSyncParse(t *testing.T) {
+	c := ConfigSync{}
+	err := c.Parse("testdata/takolabel_sync.yml")
+	if err != nil {
+		t.Fatalf("error parsing config: %v", err)
+	}
+	want := ConfigSync{
+		Repos: []Repo{
+			{"some-owner", "some-owner-repo-1"},
+			{"some-owner", "some-owner-repo-2"},
+			{"another-owner", "another-owner-repo-1"},
+		},
+		Labels: []Label{
+			{
+				Name:  "Label 1",
+				Color: "ff0000",
+			},
+			{
+				Name:        "Label 2",
+				Description: "This is the label two",
+				Color:       "00ff00",
+			},
+			{
+				Name:        "Label 3",
+				Description: "This is the label three",
+				Color:       "0000ff",
+			},
+		},
+	}
+
+	if diff := cmp.Diff(want, c); diff != "" {
+		t.Errorf("Parse() mismatch (-want +got):\n%s", diff)
+	}
+}
+
 func TestConfigEmptyParse(t *testing.T) {
 	c := ConfigEmpty{}
 	err := c.Parse("testdata/takolabel_delete.yml")
