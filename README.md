@@ -77,6 +77,35 @@ labels:
   - Label 3
 ```
 
+### Sync Labels
+
+```console
+$ takolabel sync
+```
+
+Sync labels in the repositories to those of specified in the YAML file.
+
+Write labels settings in `takolabel_sync.yml` and put in the same directory as the one where you run the command.
+
+e.g.
+
+```yaml
+repositories:
+  - some-owner/some-owner-repo-1
+  - some-owner/some-owner-repo-2
+  - another-owner/another-owner-repo-1
+labels:
+  - name: Label 1
+    description: This is the label one
+    color: ff0000
+  - name: Label 2
+    description: This is the label two
+    color: 00ff00
+  - name: Label 3
+    description: This is the label three
+    color: 0000ff
+```
+
 ### Empty Labels
 
 ```console
