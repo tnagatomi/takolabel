@@ -39,6 +39,12 @@ type ConfigDelete struct {
 	Repos  []Repo
 }
 
+// ConfigSync sets target for takolabel sync
+type ConfigSync struct {
+	Labels []Label
+	Repos  []Repo
+}
+
 // ConfigEmpty sets target for takolabel empty
 type ConfigEmpty struct {
 	Repos []Repo
@@ -67,6 +73,12 @@ type configCreateYAML struct {
 type configDeleteYAML struct {
 	Repositories []string `yaml:"repositories"`
 	Labels       []string `yaml:"labels"`
+}
+
+// configDeleteYAML is YAML config struct used for takolabel
+type configSyncYAML struct {
+	Repositories []string `yaml:"repositories"`
+	Labels       []Label  `yaml:"labels"`
 }
 
 // Parse config file for takolabel create
@@ -103,6 +115,32 @@ func (c *ConfigDelete) Parse(filename string) error {
 	}
 
 	y := configDeleteYAML{}
+	if err := yaml.Unmarshal(f, &y); err != nil {
+		return fmt.Errorf("yaml unmarshal failed: %v", err)
+	}
+
+	c.Labels = y.Labels
+	for _, r := range y.Repositories {
+		s := strings.Split(r, "/")
+		if len(s) != 2 {
+			return fmt.Errorf("repository %s is not properly formatted in setting yaml file", r)
+		}
+		c.Repos = append(c.Repos, Repo{
+			Owner: s[0],
+			Repo:  s[1],
+		})
+	}
+	return nil
+}
+
+// Parse config file for takolabel sync
+func (c *ConfigSync) Parse(filename string) error {
+	f, err := os.ReadFile(filename)
+	if err != nil {
+		return fmt.Errorf("read file failed: %v", err)
+	}
+
+	y := configSyncYAML{}
 	if err := yaml.Unmarshal(f, &y); err != nil {
 		return fmt.Errorf("yaml unmarshal failed: %v", err)
 	}

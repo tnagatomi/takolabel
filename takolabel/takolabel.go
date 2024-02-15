@@ -117,6 +117,48 @@ func (takolabel *Takolabel) Delete(labels []string, repos []Repo) error {
 	return nil
 }
 
+// Sync GitHub labels for specified repositories with specified labels
+func (takolabel *Takolabel) Sync(labels []Label, repos []Repo) error {
+	for _, r := range repos {
+		if takolabel.dryRun {
+			for _, l := range labels {
+				fmt.Printf("Would set label %s for repository %q\n", l.Name, r.Owner+"/"+r.Repo)
+			}
+			continue
+		}
+
+		fmt.Printf("Deleting all labels for %q first\n", r.Repo)
+
+		err := takolabel.deleteAllLabels(r)
+
+		if err != nil {
+			fmt.Printf("error deleting all labels for repository %q\n", r.Repo)
+			continue
+		}
+
+		fmt.Printf("Deleted all labels for %q\n", r.Repo)
+
+		for _, l := range labels {
+			label := &github.Label{
+				Name:        github.String(l.Name),
+				Description: github.String(l.Description),
+				Color:       github.String(l.Color),
+			}
+			_, _, err := takolabel.client.Issues.CreateLabel(context.Background(), r.Owner, r.Repo, label)
+
+			if err != nil {
+				fmt.Printf("error creating label %s for repository %q: %v\n", l.Name, r.Owner+"/"+r.Repo, err)
+				continue
+			}
+			fmt.Printf("Created label %s for repository %q\n", l.Name, r.Owner+"/"+r.Repo)
+		}
+
+		fmt.Printf("Sync completed for repository %q\n", r.Repo)
+	}
+
+	return nil
+}
+
 // Empty GitHub labels for specified repositories
 func (takolabel *Takolabel) Empty(repos []Repo) error {
 	for _, r := range repos {
@@ -141,5 +183,22 @@ func (takolabel *Takolabel) Empty(repos []Repo) error {
 			}
 		}
 	}
+	return nil
+}
+
+func (takolabel *Takolabel) deleteAllLabels(r Repo) error {
+	existingLabels, _, err := takolabel.client.Issues.ListLabels(context.Background(), r.Owner, r.Repo, nil)
+
+	if err != nil {
+		return fmt.Errorf("error getting labels for repository %q: %v", r.Repo, err)
+	}
+
+	for _, l := range existingLabels {
+		_, err := takolabel.client.Issues.DeleteLabel(context.Background(), r.Owner, r.Repo, *l.Name)
+		if err != nil {
+			fmt.Printf("error deleting l %v for repository: %q\n", *l.Name, r.Repo)
+		}
+	}
+
 	return nil
 }
