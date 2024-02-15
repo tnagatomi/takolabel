@@ -15,6 +15,7 @@
 /takolabel_create.yml
 /takolabel_delete.yml
 /takolabel_empty.yml
+/takolabel_sync.yml
 
 # GoReleaser
 dist/
