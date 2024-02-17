@@ -39,4 +39,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - run: go test -v ./...
+      - env:
+          TAKOLABEL_TOKEN: ${{ secrets.TAKOLABEL_TOKEN }}
+        run: go test -v ./...
