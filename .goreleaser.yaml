@@ -4,6 +4,7 @@ brews:
     repository:
       owner: tnagatomi
       name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     commit_author:
       name: Takayuki NAGATOMI
       email: tommyt6073@gmail.com
