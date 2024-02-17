@@ -1,0 +1,12 @@
+repositories:
+  - tnagatomi/test-repository-for-takolabel-1
+  - tnagatomi/test-repository-for-takolabel-2
+labels:
+  - name: Label 1
+    color: ff0000
+  - name: Label 2
+    description: This is the label two by create
+    color: 00ff00
+  - name: Label 3
+    description: This is the label three by create
+    color: 0000ff

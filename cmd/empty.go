@@ -24,10 +24,12 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/tnagatomi/takolabel/takolabel"
+	"io"
+	"os"
 )
 
 // NewEmptyCmd initialize the empty command
-func NewEmptyCmd() *cobra.Command {
+func NewEmptyCmd(in io.Reader) *cobra.Command {
 	var emptyCmd = &cobra.Command{
 		Use:   "empty",
 		Short: "Delete labels specified in takolabel_empty.yml",
@@ -41,7 +43,11 @@ func NewEmptyCmd() *cobra.Command {
 				return fmt.Errorf("failed parsing create config: %v", err)
 			}
 
-			if !dryRun && !confirm() {
+			confirmed, err := confirm(in)
+			if err != nil {
+				return fmt.Errorf("failed to confirm execution: %v", err)
+			}
+			if !dryRun && !confirmed {
 				fmt.Printf("Canceled execution\n")
 				return nil
 			}
@@ -56,5 +62,5 @@ func NewEmptyCmd() *cobra.Command {
 }
 
 func init() {
-	rootCmd.AddCommand(NewEmptyCmd())
+	rootCmd.AddCommand(NewEmptyCmd(os.Stdin))
 }

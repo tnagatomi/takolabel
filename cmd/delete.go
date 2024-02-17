@@ -24,10 +24,12 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/tnagatomi/takolabel/takolabel"
+	"io"
+	"os"
 )
 
 // NewDeleteCmd initialize the delete command
-func NewDeleteCmd() *cobra.Command {
+func NewDeleteCmd(in io.Reader) *cobra.Command {
 	var deleteCmd = &cobra.Command{
 		Use:   "delete",
 		Short: "Delete labels specified in takolabel_delete.yml",
@@ -41,7 +43,11 @@ func NewDeleteCmd() *cobra.Command {
 				return fmt.Errorf("failed parsing create config: %v", err)
 			}
 
-			if !dryRun && !confirm() {
+			confirmed, err := confirm(in)
+			if err != nil {
+				return fmt.Errorf("failed to confirm execution: %v", err)
+			}
+			if !dryRun && !confirmed {
 				fmt.Printf("Canceled execution\n")
 				return nil
 			}
@@ -56,5 +62,5 @@ func NewDeleteCmd() *cobra.Command {
 }
 
 func init() {
-	rootCmd.AddCommand(NewDeleteCmd())
+	rootCmd.AddCommand(NewDeleteCmd(os.Stdin))
 }
