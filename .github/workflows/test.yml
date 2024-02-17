@@ -1,0 +1,44 @@
+name: test
+on:
+  pull_request:
+env:
+  TAKOLABEL_TOKEN: ${{ secrets.TAKOLABEL_TOKEN }}
+jobs:
+  test-ubuntu:
+    name: Test on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.22.0'
+      - name: Run tests
+        run: go test ./...
+  test-windows:
+    name: Test on Windows
+    needs: test-ubuntu
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.22.0'
+      - name: Run tests
+        run: go test ./...
+  test-macos:
+    name: Test on macOS
+    needs: test-windows
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.22.0'
+      - name: Run tests
+        run: go test ./...

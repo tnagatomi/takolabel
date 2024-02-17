@@ -21,19 +21,22 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
-	"os"
+	"io"
 )
 
-func confirm() bool {
-	var response string
+func confirm(in io.Reader) (bool, error) {
 	fmt.Printf("Are you sure you want to do this? (y/n): ")
-	_, err := fmt.Scan(&response)
+
+	reader := bufio.NewReader(in)
+	s, err := reader.ReadString('\n')
 	if err != nil {
-		os.Exit(1)
+		return false, fmt.Errorf("failed to read: %v", err)
 	}
-	if response == "y" {
-		return true
+	fmt.Print(s)
+	if s == "y\n" {
+		return true, nil
 	}
-	return false
+	return false, nil
 }

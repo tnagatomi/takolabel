@@ -26,29 +26,32 @@ import (
 	"github.com/tnagatomi/takolabel/takolabel"
 )
 
-// createCmd represents the create command
-var createCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create labels specified in takolabel_create.yml",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		t, err := takolabel.NewTakolabel(dryRun)
-		if err != nil {
-			return fmt.Errorf("failed initialization: %v", err)
-		}
+// NewCreateCmd initialize the create command
+func NewCreateCmd() *cobra.Command {
+	var createCmd = &cobra.Command{
+		Use:   "create",
+		Short: "Create labels specified in takolabel_create.yml",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			t, err := takolabel.NewTakolabel(dryRun)
+			if err != nil {
+				return fmt.Errorf("failed initialization: %v", err)
+			}
 
-		c := takolabel.ConfigCreate{}
-		if err := c.Parse("takolabel_create.yml"); err != nil {
-			return fmt.Errorf("failed parsing create config: %v", err)
-		}
+			c := takolabel.ConfigCreate{}
+			if err := c.Parse("takolabel_create.yml"); err != nil {
+				return fmt.Errorf("failed parsing create config: %v", err)
+			}
 
-		if err := t.Create(c.Labels, c.Repos); err != nil {
-			return fmt.Errorf("failed creating labels: %v", err)
-		}
+			if err := t.Create(c.Labels, c.Repos); err != nil {
+				return fmt.Errorf("failed creating labels: %v", err)
+			}
 
-		return nil
-	},
+			return nil
+		},
+	}
+	return createCmd
 }
 
 func init() {
-	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(NewCreateCmd())
 }

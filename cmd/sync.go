@@ -26,29 +26,32 @@ import (
 	"github.com/tnagatomi/takolabel/takolabel"
 )
 
-// syncCmd represents the sync command
-var syncCmd = &cobra.Command{
-	Use:   "sync",
-	Short: "Sync labels specified in takolabel_sync.yml",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		t, err := takolabel.NewTakolabel(dryRun)
-		if err != nil {
-			return fmt.Errorf("failed initialization: %v", err)
-		}
+// NewSyncCmd initializwe the sync command
+func NewSyncCmd() *cobra.Command {
+	var syncCmd = &cobra.Command{
+		Use:   "sync",
+		Short: "Sync labels specified in takolabel_sync.yml",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			t, err := takolabel.NewTakolabel(dryRun)
+			if err != nil {
+				return fmt.Errorf("failed initialization: %v", err)
+			}
 
-		c := takolabel.ConfigSync{}
-		if err := c.Parse("takolabel_sync.yml"); err != nil {
-			return fmt.Errorf("failed parsing sync config: %v", err)
-		}
+			c := takolabel.ConfigSync{}
+			if err := c.Parse("takolabel_sync.yml"); err != nil {
+				return fmt.Errorf("failed parsing sync config: %v", err)
+			}
 
-		if err := t.Sync(c.Labels, c.Repos); err != nil {
-			return fmt.Errorf("failed syncing labels: %v", err)
-		}
+			if err := t.Sync(c.Labels, c.Repos); err != nil {
+				return fmt.Errorf("failed syncing labels: %v", err)
+			}
 
-		return nil
-	},
+			return nil
+		},
+	}
+	return syncCmd
 }
 
 func init() {
-	rootCmd.AddCommand(syncCmd)
+	rootCmd.AddCommand(NewSyncCmd())
 }
