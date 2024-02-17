@@ -26,32 +26,35 @@ import (
 	"github.com/tnagatomi/takolabel/takolabel"
 )
 
-// emptyCmd represents the empty command
-var emptyCmd = &cobra.Command{
-	Use:   "empty",
-	Short: "Delete labels specified in takolabel_empty.yml",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		t, err := takolabel.NewTakolabel(dryRun)
-		if err != nil {
-			return fmt.Errorf("failed initialization: %v", err)
-		}
-		c := takolabel.ConfigEmpty{}
-		if err := c.Parse("takolabel_empty.yml"); err != nil {
-			return fmt.Errorf("failed parsing create config: %v", err)
-		}
+// NewEmptyCmd initialize the empty command
+func NewEmptyCmd() *cobra.Command {
+	var emptyCmd = &cobra.Command{
+		Use:   "empty",
+		Short: "Delete labels specified in takolabel_empty.yml",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			t, err := takolabel.NewTakolabel(dryRun)
+			if err != nil {
+				return fmt.Errorf("failed initialization: %v", err)
+			}
+			c := takolabel.ConfigEmpty{}
+			if err := c.Parse("takolabel_empty.yml"); err != nil {
+				return fmt.Errorf("failed parsing create config: %v", err)
+			}
 
-		if !dryRun && !confirm() {
-			fmt.Printf("Canceled execution\n")
+			if !dryRun && !confirm() {
+				fmt.Printf("Canceled execution\n")
+				return nil
+			}
+
+			if err := t.Empty(c.Repos); err != nil {
+				return fmt.Errorf("failed emptying labels: %v", err)
+			}
 			return nil
-		}
-
-		if err := t.Empty(c.Repos); err != nil {
-			return fmt.Errorf("failed emptying labels: %v", err)
-		}
-		return nil
-	},
+		},
+	}
+	return emptyCmd
 }
 
 func init() {
-	rootCmd.AddCommand(emptyCmd)
+	rootCmd.AddCommand(NewEmptyCmd())
 }

@@ -26,32 +26,35 @@ import (
 	"github.com/tnagatomi/takolabel/takolabel"
 )
 
-// deleteCmd represents the delete command
-var deleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "Delete labels specified in takolabel_delete.yml",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		t, err := takolabel.NewTakolabel(dryRun)
-		if err != nil {
-			return fmt.Errorf("failed initialization: %v", err)
-		}
-		c := takolabel.ConfigDelete{}
-		if err := c.Parse("takolabel_delete.yml"); err != nil {
-			return fmt.Errorf("failed parsing create config: %v", err)
-		}
+// NewDeleteCmd initialize the delete command
+func NewDeleteCmd() *cobra.Command {
+	var deleteCmd = &cobra.Command{
+		Use:   "delete",
+		Short: "Delete labels specified in takolabel_delete.yml",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			t, err := takolabel.NewTakolabel(dryRun)
+			if err != nil {
+				return fmt.Errorf("failed initialization: %v", err)
+			}
+			c := takolabel.ConfigDelete{}
+			if err := c.Parse("takolabel_delete.yml"); err != nil {
+				return fmt.Errorf("failed parsing create config: %v", err)
+			}
 
-		if !dryRun && !confirm() {
-			fmt.Printf("Canceled execution\n")
+			if !dryRun && !confirm() {
+				fmt.Printf("Canceled execution\n")
+				return nil
+			}
+
+			if err := t.Delete(c.Labels, c.Repos); err != nil {
+				return fmt.Errorf("failed deleting labels: %v", err)
+			}
 			return nil
-		}
-
-		if err := t.Delete(c.Labels, c.Repos); err != nil {
-			return fmt.Errorf("failed deleting labels: %v", err)
-		}
-		return nil
-	},
+		},
+	}
+	return deleteCmd
 }
 
 func init() {
-	rootCmd.AddCommand(deleteCmd)
+	rootCmd.AddCommand(NewDeleteCmd())
 }
