@@ -1,3 +1,6 @@
+> [!NOTE]
+> This tool is deprecated and archived, use [gh-fuda](https://github.com/tnagatomi/gh-fuda) for the similar functionalities.
+
 # takolabel
 
 `takolabel` is a CLI tool for manipulating GitHub Labels across multiple repositories.
